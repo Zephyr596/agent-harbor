@@ -1,0 +1,32 @@
+{
+  "date": "2026-11-12",
+  "timezone": "Asia/Shanghai",
+  "scope": "User-authorized maintenance of the source desktop and matching clean templates",
+  "loading_observations": {
+    "method": "Serial source-machine observations; HTTP Cache moved aside and retained; Code Cache and account/session data retained",
+    "http2_cold": {"dom_ready_ms": 84692, "sidebar_painted_ms": 94848, "network_bytes": 6876115},
+    "http1_cold": {"dom_ready_ms": 16380, "sidebar_painted_ms": 21235, "network_bytes": 7266044},
+    "http1_final_warm": {"dom_ready_ms": 1066, "sidebar_painted_ms": 1966},
+    "http2_warm_control": {"dom_ready_ms": 1369, "sidebar_painted_ms": 2104},
+    "original_http_cache_restored": true,
+    "new_code_page_verified": true,
+    "existing_code_conversation_opened": true,
+    "model_task_sent_for_test": false
+  },
+  "workspace_smoke": {
+    "i3_candidate_config_valid": true,
+    "runtime_hook_and_assignments_loaded": true,
+    "missing_claude_reopened_by_helper": true,
+    "claude_workspace": "2",
+    "chrome_workspace": "1",
+    "chrome_process_preserved": true,
+    "second_helper_run_preserved_both_processes": true
+  },
+  "template_validation": {"command": "make check", "passed": true, "unit_tests": 8},
+  "not_verified": [
+    "Full host power-cycle after this change",
+    "Chrome cold-launch after closing its current live window",
+    "Arbitrary window layouts or running process restoration",
+    "Desktop keyring and Chromium/Electron process sandboxing"
+  ]
+}

@@ -283,11 +283,19 @@ claude --version
 ### 应用入口
 
 - 浏览器：`sandbox-browser`。
-- Claude Desktop：`sandbox-claude-desktop`，带显式代理、英文、X11 和 `--disable-gpu`。源机默认渲染曾白屏，软件渲染后恢复。
+- Claude Desktop：`sandbox-claude-desktop`，带显式代理、英文、X11、`--disable-gpu` 和 `--disable-http2`。软件渲染用于源机白屏兼容；HTTP/1.1 用于缓解源机代理链路上的资源冷加载延迟，不能推导所有网络都更快。
 - CLI：`claude`。它与桌面包内自带的 Claude Code 组件不是同一个安装入口。
 - 启动器是 xterm + Python curses 的小菜单，**不是自动扫描所有 .desktop 的完整桌面菜单**。现有四项：浏览器、终端、运行命令、Claude Desktop。新增应用可先选第 3 项运行命令，再修改 `sandbox-app-menu.py` 加入固定入口。
 
 Claude Desktop 的系统钥匙串在当前环境中缺失，日志显示会话持久化受限；重启后可能需要重新登录。没有用明文持久化绕过这个问题。能打开聊天界面也不表示 Cowork、虚拟机、GPU、全部 Code/宿主能力都已在 PRoot 中验收。
+
+### 桌面工作区自动恢复
+
+种子 i3 配置在桌面登录时运行 `sandbox-session-restore`，并按窗口 class 将 Chrome 放到工作区 1、Claude Desktop 放到工作区 2。浏览器启动时传入 `--restore-last-session`；Claude 使用自己保留的会话数据。
+
+恢复脚本只启动完整安装、尚未运行的应用，不自动下载软件，不重启已有应用。普通 i3 `reload` 不会重跑此启动项。可以在桌面终端运行 `sandbox-session-restore --dry-run` 查看计划，或不带参数补开缺少的应用。
+
+这是固定应用工作区的重建，不恢复未保存内容、正在执行的终端命令、后台 Agent 任务或任意自定义窗口布局。新机器上尚未安装的可选 Claude 会被跳过；安装后可以手动运行恢复脚本。现有 HOME 不要重跑 `prepare.py`；应备份后仅合并新的 i3 配置段、恢复脚本和 Claude 启动器。详情及验收范围见 [桌面恢复与加载优化](DESKTOP-RECOVERY.md)。
 
 ## 8. 显示、中文输入和快捷键
 

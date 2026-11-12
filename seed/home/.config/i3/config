@@ -241,3 +241,8 @@ mode "remote" {
 
 # The application menu is a centered floating dialog.
 for_window [class="SandboxLauncher"] floating enable, move position center
+
+# Restore the two application workspaces on desktop login, not on config reload.
+assign [class="^Google-chrome$"] 1
+assign [class="^com[.]anthropic[.]Claude$"] 2
+exec --no-startup-id /config/.local/bin/sandbox-session-restore

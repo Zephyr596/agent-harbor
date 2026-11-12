@@ -11,4 +11,5 @@ export NO_PROXY=localhost,127.0.0.1,::1 no_proxy=localhost,127.0.0.1,::1
 export LANG=en_US.UTF-8 LANGUAGE=en_US:en
 export GDK_SCALE=1 GDK_DPI_SCALE=1 QT_SCALE_FACTOR=1
 mkdir -p /config/.local/state/claude-desktop
-exec /config/.local/bin/proot-apps run ghcr.io/linuxserver/proot-apps:claude --proxy-server=http://127.0.0.1:2080 --ozone-platform=x11 --lang=en-US --disable-gpu "$@" >> /config/.local/state/claude-desktop/launch.log 2>&1
+# HTTP/1.1 avoids the observed slow cold loads over this desktop proxy path.
+exec /config/.local/bin/proot-apps run ghcr.io/linuxserver/proot-apps:claude --proxy-server=http://127.0.0.1:2080 --ozone-platform=x11 --lang=en-US --disable-gpu --disable-http2 "$@" >> /config/.local/state/claude-desktop/launch.log 2>&1

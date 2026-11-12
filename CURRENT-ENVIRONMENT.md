@@ -16,4 +16,6 @@
 
 This delivery contains no browser profile migration, session tokens, SSH private keys, Tailscale state or real Shadowsocks password. The AWS server was not re-audited in this documentation pass because its SSH signing agent was unavailable; `server/` is a reference template, not an exported live server configuration.
 
+Later desktop-maintenance update on the same date: Claude's launcher gained `--disable-http2` after serial HTTP-cache-cold observations showed main DOM readiness at 84.7 s with HTTP/2 and 16.4 s with HTTP/1.1. Warm starts were about 1–2 s in either mode. This is a source-machine workaround, not a transport benchmark. Templates now include installed-app startup and class-based placement in workspaces 1/2; see `docs/DESKTOP-RECOVERY.md`. These later changes were explicitly requested for the running source desktop; the original repository-preparation pass itself did not modify production. No host reboot was performed to validate this later change.
+
 The repository now parameterizes egress endpoint, tunneled DNS upstream and display timezone. The generic default is Etc/UTC with DNS 1.1.1.1 via the proxy. The observations above describe the historical Tokyo instance; they are not deployment defaults or evidence for every region. Production was not changed while preparing this repository.
