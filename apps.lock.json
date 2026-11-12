@@ -1,0 +1,18 @@
+{
+  "chrome": {
+    "repository": "linuxserver/proot-apps",
+    "tag": "chrome",
+    "architecture": "amd64",
+    "layer_digest": "sha256:8b02a5533de8f925ec640a47321a1a4854dd9a4d145d019bea22f6fff3e762f2",
+    "layer_size": 639114820,
+    "observed_package_version": "157.0.8103.78-1"
+  },
+  "claude": {
+    "repository": "linuxserver/proot-apps",
+    "tag": "claude",
+    "architecture": "amd64",
+    "layer_digest": "sha256:a0ed7bf4cb49f4ea88031ede398883bc2e57689e3f62915e4089334a506cbf9d",
+    "layer_size": 731395866,
+    "observed_package_version": "5.1231.0"
+  }
+}

@@ -1,0 +1,14 @@
+#!/bin/sh
+set -eu
+ROOT=/config/proot-apps/ghcr.io_linuxserver_proot-apps_claude
+if [ ! -s "$ROOT/SHALAYER" ] || [ -e "$ROOT/DOWNLOADING" ]; then
+  echo "Claude Desktop installation is incomplete; finish its update before launching." >&2
+  exit 1
+fi
+export HTTP_PROXY=http://127.0.0.1:2080 HTTPS_PROXY=http://127.0.0.1:2080
+export http_proxy="$HTTP_PROXY" https_proxy="$HTTPS_PROXY"
+export NO_PROXY=localhost,127.0.0.1,::1 no_proxy=localhost,127.0.0.1,::1
+export LANG=en_US.UTF-8 LANGUAGE=en_US:en
+export GDK_SCALE=1 GDK_DPI_SCALE=1 QT_SCALE_FACTOR=1
+mkdir -p /config/.local/state/claude-desktop
+exec /config/.local/bin/proot-apps run ghcr.io/linuxserver/proot-apps:claude --proxy-server=http://127.0.0.1:2080 --ozone-platform=x11 --lang=en-US --disable-gpu "$@" >> /config/.local/state/claude-desktop/launch.log 2>&1

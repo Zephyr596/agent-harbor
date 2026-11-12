@@ -1,0 +1,1 @@
+$HOME/.local/bin/proot-apps run ghcr.io/linuxserver/proot-apps:chrome "$@"

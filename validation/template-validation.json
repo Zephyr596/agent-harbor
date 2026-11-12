@@ -1,0 +1,27 @@
+{
+  "compose_config": true,
+  "singbox_client_config": true,
+  "singbox_server_reference_config": true,
+  "pinned_base_resource_hashes": {
+    "/usr/share/selkies/selkies-dashboard/selkies-core.js": "6d40a13fe9ca9751047c6b138bd0d89fb925003abfbce79ddfcab7ab7d7b6192",
+    "/lsiopy/lib/python3.14/site-packages/selkies/input_handler.py": "7f894276415922c8c34746755385d918fe76b5c92bd209ee214a40237c1852ab",
+    "/etc/s6-overlay/s6-rc.d/svc-de/run": "a9b97e7bc488b0042646aa6298d5aa026640690c75dfcba0b82e11351ad21834"
+  },
+  "app_source_checks": [
+    {
+      "app": "chrome",
+      "layer_digest": "sha256:8b02a5533de8f925ec640a47321a1a4854dd9a4d145d019bea22f6fff3e762f2",
+      "layer_size": 639114820,
+      "range_supported": true,
+      "installed": false
+    },
+    {
+      "app": "claude",
+      "layer_digest": "sha256:a0ed7bf4cb49f4ea88031ede398883bc2e57689e3f62915e4089334a506cbf9d",
+      "layer_size": 731395866,
+      "range_supported": true,
+      "installed": false
+    }
+  ],
+  "fresh_end_to_end_deployment": false
+}

@@ -1,0 +1,14 @@
+{
+  "desktop_and_transport_up": true,
+  "status": "413\nup (pid 312 pgid 312) 1 seconds",
+  "/usr/share/selkies/web/selkies-core.js": "54390230482730af4403b6fd727dd5926c273d1391bcd36b45b0b6da6e99caae  /usr/share/selkies/web/selkies-core.js",
+  "/usr/share/selkies/selkies-dashboard/selkies-core.js": "54390230482730af4403b6fd727dd5926c273d1391bcd36b45b0b6da6e99caae  /usr/share/selkies/selkies-dashboard/selkies-core.js",
+  "/lsiopy/lib/python3.14/site-packages/selkies/input_handler.py": "c6e1b5bf2146d24bd152bc27a4b2d07cc0da23f2847cea735aa30ace506ae812  /lsiopy/lib/python3.14/site-packages/selkies/input_handler.py",
+  "local_https_status": "HTTP/1.1 200 OK",
+  "asset_statuses": {
+    "selkies-core.js": "200",
+    "assets/index-BD8uW1M7.js": "200",
+    "assets/index-R16onyQU.css": "200",
+    "manifest.json": "200"
+  }
+}

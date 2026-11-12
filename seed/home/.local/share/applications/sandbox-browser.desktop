@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Browser (container isolation only)
+Exec=/config/.local/bin/sandbox-browser %U
+Icon=web-browser
+Terminal=false
+Categories=Network;WebBrowser;

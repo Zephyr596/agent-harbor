@@ -1,0 +1,14 @@
+Xcursor.theme: breeze
+
+! Predictable terminal metrics, Unicode, and explicit clipboard bindings.
+Xcursor.size: 24
+XTerm*faceName: DejaVu Sans Mono
+XTerm*faceSize: 11
+XTerm*utf8: 2
+XTerm*termName: xterm-256color
+XTerm*saveLines: 10000
+XTerm*selectToClipboard: true
+XTerm*VT100.translations: #override \
+    Ctrl Shift <Key>C: copy-selection(CLIPBOARD) \n\
+    Ctrl Shift <Key>V: insert-selection(CLIPBOARD)
+Xft.dpi:   192

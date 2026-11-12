@@ -1,0 +1,4 @@
+#!/bin/sh
+export LANG=C.UTF-8 LC_CTYPE=C.UTF-8
+i3-msg 'mode "default"; fullscreen disable' >/dev/null
+exec /usr/bin/xterm -u8 -class SandboxLauncher -name sandbox-launcher -T "Applications" -fa "DejaVu Sans Mono" -fs 11 -geometry 72x16 -bg "#20242c" -fg "#edf1f7" -e python3 /config/.local/bin/sandbox-app-menu.py

@@ -1,0 +1,7 @@
+{
+  "ProxyMode": "fixed_servers",
+  "ProxyServer": "http://127.0.0.1:2080",
+  "ProxyBypassList": "localhost;127.0.0.1;[::1]",
+  "DnsOverHttpsMode": "off",
+  "WebRtcIPHandlingPolicy": "disable_non_proxied_udp"
+}

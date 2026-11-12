@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Claude Desktop
+Comment=Claude Desktop in the existing restricted Webtop container
+Exec=/config/.local/bin/sandbox-claude-desktop %U
+Icon=claude-desktop
+Terminal=false
+Categories=Office;Development;
+StartupWMClass=Claude-desktop
+MimeType=x-scheme-handler/claude;application/vnd.anthropic.mcpb;application/vnd.anthropic.skill;

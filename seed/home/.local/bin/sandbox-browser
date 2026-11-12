@@ -1,0 +1,4 @@
+#!/bin/sh
+# Existing PRoot Chrome: Docker-isolated only; Chromium process sandbox is NOT enabled.
+export GDK_SCALE=1 GDK_DPI_SCALE=1 QT_SCALE_FACTOR=1
+exec /config/.local/bin/chrome-pa --proxy-server=http://127.0.0.1:2080 --ozone-platform=x11 --lang=en-US --accept-lang=en-US "$@"

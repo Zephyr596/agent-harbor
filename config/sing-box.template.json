@@ -1,0 +1,59 @@
+{
+  "log": {
+    "level": "info"
+  },
+  "inbounds": [
+    {
+      "type": "mixed",
+      "tag": "local-proxy",
+      "listen": "127.0.0.1",
+      "listen_port": 2080
+    }
+  ],
+  "outbounds": [
+    {
+      "type": "shadowsocks",
+      "tag": "egress",
+      "server": "REPLACE_PROXY_IPV4",
+      "server_port": 28443,
+      "method": "2022-blake3-aes-128-gcm",
+      "password": "REPLACE_SECRET",
+      "network": "tcp"
+    }
+  ],
+  "route": {
+    "final": "egress",
+    "rules": [
+      {
+        "inbound": [
+          "local-proxy"
+        ],
+        "port": [
+          53
+        ],
+        "action": "hijack-dns"
+      },
+      {
+        "inbound": [
+          "local-proxy"
+        ],
+        "action": "resolve",
+        "server": "proxy-dns",
+        "strategy": "ipv4_only"
+      }
+    ]
+  },
+  "dns": {
+    "servers": [
+      {
+        "type": "tcp",
+        "tag": "proxy-dns",
+        "server": "REPLACE_DNS_IPV4",
+        "server_port": 53,
+        "detour": "egress"
+      }
+    ],
+    "final": "proxy-dns",
+    "strategy": "ipv4_only"
+  }
+}

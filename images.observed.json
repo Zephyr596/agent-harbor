@@ -1,0 +1,54 @@
+{
+  "sandbox-firewall": {
+    "image_id": "sha256:9ff2a51d43fe1386fc74b402a5bc0ef7be8fa813b1df095f0fdc47423560cbb5",
+    "configured_image": "browser-sandbox-firewall",
+    "repo_digests": [
+      "browser-sandbox-firewall@sha256:9ff2a51d43fe1386fc74b402a5bc0ef7be8fa813b1df095f0fdc47423560cbb5"
+    ],
+    "created": "2026-11-12T15:21:16.364395318+08:00",
+    "version_labels": {
+      "com.docker.compose.version": "5.7.1"
+    },
+    "mount_destinations": []
+  },
+  "sandbox-singbox": {
+    "image_id": "sha256:0788ffbddab2c68a99a2dd4780bbc50902f159af6f589df3ee74a8389d278279",
+    "configured_image": "ghcr.io/sagernet/sing-box:latest",
+    "repo_digests": [
+      "ghcr.io/sagernet/sing-box@sha256:0788ffbddab2c68a99a2dd4780bbc50902f159af6f589df3ee74a8389d278279"
+    ],
+    "created": "2026-10-24T01:12:28.318563902Z",
+    "version_labels": {
+      "org.opencontainers.image.revision": "c005f35300ce76427dc285481ec5695f5b179cd2",
+      "org.opencontainers.image.source": "https://github.com/SagerNet/sing-box",
+      "org.opencontainers.image.version": "v1.14.4"
+    },
+    "mount_destinations": [
+      "/etc/sing-box/config.json"
+    ]
+  },
+  "sandbox-webtop": {
+    "image_id": "sha256:4b1607409aef6682356796fd963f91fcd5ff7e01a196aa65257b0f222d930ed3",
+    "configured_image": "lscr.io/linuxserver/webtop:ubuntu-i3",
+    "repo_digests": [
+      "lscr.io/linuxserver/webtop@sha256:4b1607409aef6682356796fd963f91fcd5ff7e01a196aa65257b0f222d930ed3"
+    ],
+    "created": "2026-11-08T21:40:47.489427023Z",
+    "version_labels": {
+      "build_version": "Linuxserver.io version:- 40ce2d52-ls300 Build-date:- 2026-11-08T21:38:14+00:00",
+      "org.opencontainers.image.revision": "e4da9dbba7327f3b44cf5d82f1abfd53a92f45a3",
+      "org.opencontainers.image.source": "https://github.com/linuxserver/docker-webtop",
+      "org.opencontainers.image.version": "40ce2d52-ls300"
+    },
+    "mount_destinations": [
+      "/config",
+      "/etc/s6-overlay/s6-rc.d/svc-de/run"
+    ]
+  },
+  "firewall_base": {
+    "repo_digests": [
+      "alpine@sha256:49340b346798875b5592e5d420241f2f9cfba5f47e62ebb1446a1b34734e898f"
+    ],
+    "id": "sha256:49340b346798875b5592e5d420241f2f9cfba5f47e62ebb1446a1b34734e898f"
+  }
+}

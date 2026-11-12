@@ -1,0 +1,76 @@
+services:
+  firewall:
+    build: ./firewall
+    container_name: sandbox-firewall
+    cap_drop:
+    - ALL
+    cap_add:
+    - NET_ADMIN
+    ports:
+    - 127.0.0.1:3001:3001
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - iptables -S OUTPUT | grep -q '^-P OUTPUT DROP$'
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+  singbox:
+    image: ghcr.io/sagernet/sing-box:latest
+    container_name: sandbox-singbox
+    network_mode: service:firewall
+    depends_on:
+      firewall:
+        condition: service_healthy
+    volumes:
+    - ./config/sing-box.json:/etc/sing-box/config.json:ro
+    command:
+    - -c
+    - /etc/sing-box/config.json
+    - run
+    restart: unless-stopped
+  webtop:
+    image: lscr.io/linuxserver/webtop:ubuntu-i3
+    container_name: sandbox-webtop
+    network_mode: service:firewall
+    depends_on:
+      singbox:
+        condition: service_started
+    cap_drop:
+    - NET_ADMIN
+    - NET_RAW
+    environment:
+      PUID: '1000'
+      PGID: '1000'
+      TZ: Asia/Tokyo
+      HTTP_PROXY: http://127.0.0.1:2080
+      HTTPS_PROXY: http://127.0.0.1:2080
+      http_proxy: http://127.0.0.1:2080
+      https_proxy: http://127.0.0.1:2080
+      ALL_PROXY: socks5h://127.0.0.1:2080
+      all_proxy: socks5h://127.0.0.1:2080
+      NO_PROXY: localhost,127.0.0.1,::1
+      no_proxy: localhost,127.0.0.1,::1
+      SELKIES_ENABLE_RESIZE: 'true'
+      SELKIES_MANUAL_RESOLUTION: 'false'
+      SELKIES_MANUAL_WIDTH: '0'
+      SELKIES_MANUAL_HEIGHT: '0'
+      SELKIES_USE_CSS_SCALING: 'false'
+      GDK_SCALE: '1'
+      GDK_DPI_SCALE: '1'
+      QT_SCALE_FACTOR: '1'
+      XCURSOR_SIZE: '24'
+      DISABLE_SUDO: 'true'
+    volumes:
+    - ./webtop-data:/config
+    - ./desktop/svc-de-run:/etc/s6-overlay/s6-rc.d/svc-de/run:ro
+    - ./desktop/ime/input_handler.py:/lsiopy/lib/python3.14/site-packages/selkies/input_handler.py:ro
+    - ./desktop/ime/selkies-core.js:/usr/share/selkies/web/selkies-core.js:ro
+    - ./desktop/ime/index-web.html:/usr/share/selkies/web/index.html:ro
+    - ./desktop/ime/selkies-core.js:/usr/share/selkies/selkies-dashboard/selkies-core.js:ro
+    - ./desktop/ime/index-dashboard.html:/usr/share/selkies/selkies-dashboard/index.html:ro
+    shm_size: 1gb
+    restart: unless-stopped
+    security_opt:
+    - no-new-privileges:true

@@ -1,0 +1,15 @@
+.env
+config/sing-box.json
+webtop-data/
+*.tar
+*.tar.gz
+*.log
+backups/
+
+__pycache__/
+*.pyc
+mac/webtop-ssh-tunnel.plist
+
+.DS_Store
+.venv/
+work/
