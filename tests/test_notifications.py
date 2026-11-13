@@ -70,5 +70,23 @@ class NotificationInstallTests(unittest.TestCase):
         self.assertEqual(result.count('AGENT_HARBOR_DESKTOP_NOTIFICATIONS'), 1)
 
 
-if __name__ == '__main__':
+
+
+class AttentionTests(unittest.TestCase):
+    def test_any_active_controller_keeps_desktop_active(self):
+        state = SERVER.AttentionState()
+        self.assertFalse(state.update('first', False, 10))
+        self.assertTrue(state.update('second', True, 10))
+        self.assertFalse(state.update('second', True, 11, release=True))
+        self.assertTrue(state.current(150))
+
+    def test_background_heartbeat_renews_lease(self):
+        state = SERVER.AttentionState()
+        state.update('first', False, 10)
+        self.assertFalse(state.update('first', False, 120))
+        self.assertFalse(state.current(200))
+        self.assertTrue(state.current(251))
+
+
+if __name__ == "__main__":
     unittest.main()

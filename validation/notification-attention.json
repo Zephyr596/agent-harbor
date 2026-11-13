@@ -1,0 +1,49 @@
+{
+  "date": "2026-11-13",
+  "capabilities": {
+    "grey_transition_reproduced": true,
+    "application_web_reload_restored_panel": true,
+    "cookies_cleared": false,
+    "account_capabilities_forced": false
+  },
+  "notifications": {
+    "mac_chrome_notification_helper_was_disabled": true,
+    "mac_chrome_notification_helper_enabled_via_system_settings": true,
+    "desktop_foreground_suppression_confirmed_in_app_code": true,
+    "attention_sync_deployed": true,
+    "physical_mac_background_switch_verified": true,
+    "physical_mac_background_switch_status": "user manually switched away; desktop_active false and X11 input focus 0",
+    "actual_claude_task_notification_verified": false,
+    "physical_mac_background_observation": {
+      "desktop_active": false,
+      "x_input_focus": 0,
+      "listener": true,
+      "subscribers": 1
+    },
+    "synthetic_notice_accepted_while_background": true,
+    "mac_notification_display_user_confirmation": "notification center receipt confirmed; persistent top-right alert confirmed by user",
+    "mac_notification_center_delivery_verified": true,
+    "mac_persistent_banner_user_confirmed": true,
+    "mac_chrome_main_alert_style": "Persistent",
+    "foreground_focus_restore_verified": true,
+    "foreground_observation": {
+      "desktop_active": true,
+      "original_application_input_focus_restored": true
+    }
+  },
+  "tests": {
+    "python_tests_passed": 19,
+    "javascript_tests_passed": 3,
+    "isolated_real_x11_focus_clear_and_restore": true,
+    "uvloop_http_auth_and_sse": true,
+    "unsubscribed_or_viewer_attention_denied": true,
+    "invalid_or_cross_site_attention_denied": true
+  },
+  "deployment": {
+    "desktop_application_main_processes_preserved": true,
+    "new_host_ports": false,
+    "container_privileges_increased": false,
+    "host_network_changed": false,
+    "global_mac_focus_or_screen_sharing_preferences_changed": false
+  }
+}

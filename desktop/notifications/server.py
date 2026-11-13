@@ -43,6 +43,22 @@ def decode_notice(data):
             "id": uuid.uuid4().hex}
 
 
+class AttentionState:
+    def __init__(self):
+        self.clients = {}
+
+    def update(self, client, active, now, release=False):
+        if release:
+            self.clients.pop(client, None)
+        else:
+            self.clients[client] = (active, now)
+        return self.current(now)
+
+    def current(self, now):
+        self.clients = {key: value for key, value in self.clients.items() if now - value[1] < 130}
+        return not self.clients or any(value[0] for value in self.clients.values())
+
+
 class Bridge(asyncio.DatagramProtocol):
     def __init__(self):
         self.clients = set()
@@ -83,6 +99,20 @@ def install(app, supervisor, api_prefix):
     receiver = None
     receiver_inode = None
     available = False
+    attention_state = AttentionState()
+    attention_subscribers = {}
+    last_attention = None
+
+    def forward_attention(active, force=False):
+        nonlocal last_attention
+        if receiver and (force or active != last_attention):
+            try:
+                receiver.sendto(json.dumps({"active": active}).encode(), str(state / "attention.sock"))
+                last_attention = active
+                return True
+            except OSError:
+                return False
+        return active == last_attention
 
     def guard(request):
         if supervisor._viewer_ceiling(request):
@@ -113,6 +143,8 @@ def install(app, supervisor, api_prefix):
                     except BlockingIOError:
                         return
                     bridge.datagram_received(data, None)
+                    if bridge.last_heartbeat:
+                        forward_attention(attention_state.current(time.monotonic()))
 
             # uvloop does not accept AF_UNIX local_addr in create_datagram_endpoint.
             asyncio.get_running_loop().add_reader(receiver.fileno(), readable)
@@ -140,9 +172,35 @@ def install(app, supervisor, api_prefix):
         guard(request)
         return web.json_response({"available": available,
                                   "listener": time.monotonic() - bridge.last_heartbeat < 30,
-                                  "subscribers": len(bridge.clients), "accepted": bridge.accepted},
+                                  "subscribers": len(bridge.clients), "accepted": bridge.accepted,
+                                  "attention_clients": len(attention_state.clients),
+                                  "desktop_active": attention_state.current(time.monotonic()),
+                                  "focus_synchronized": last_attention},
                                  status=200 if available else 503,
                                  headers={"Cache-Control": "no-store"})
+
+    async def attention(request):
+        guard(request)
+        if request.content_type != "application/json":
+            raise web.HTTPUnsupportedMediaType()
+        data = await request.content.read(513)
+        if len(data) > 512:
+            raise web.HTTPRequestEntityTooLarge(max_size=512, actual_size=len(data))
+        try:
+            value = json.loads(data)
+        except (ValueError, UnicodeError):
+            raise web.HTTPBadRequest()
+        if (not isinstance(value, dict) or not isinstance(value.get("client"), str)
+                or not re.fullmatch(r"[a-zA-Z0-9-]{16,64}", value["client"])
+                or type(value.get("active")) is not bool
+                or type(value.get("release", False)) is not bool):
+            raise web.HTTPBadRequest()
+        if not value.get("release") and value["client"] not in attention_subscribers.values():
+            raise web.HTTPConflict(text="Connect the notification stream first")
+        if value["client"] not in attention_state.clients and len(attention_state.clients) >= 64:
+            raise web.HTTPTooManyRequests()
+        active = attention_state.update(value["client"], value["active"], time.monotonic(), value.get("release", False))
+        return web.json_response({"synchronized": forward_attention(active, force=True)}, headers={"Cache-Control": "no-store"})
 
     async def events(request):
         guard(request)
@@ -154,7 +212,9 @@ def install(app, supervisor, api_prefix):
             "Cache-Control": "no-store", "X-Accel-Buffering": "no"})
         await response.prepare(request)
         queue = asyncio.Queue(maxsize=32)
+        client_id = request.query.get("client", "")
         bridge.clients.add(queue)
+        attention_subscribers[queue] = client_id
         try:
             ready = json.dumps({"listener": time.monotonic() - bridge.last_heartbeat < 30})
             await response.write(("event: health\ndata: " + ready + "\n\n").encode())
@@ -170,10 +230,15 @@ def install(app, supervisor, api_prefix):
             pass
         finally:
             bridge.clients.discard(queue)
+            attention_subscribers.pop(queue, None)
+            if client_id and client_id not in attention_subscribers.values():
+                active = attention_state.update(client_id, True, time.monotonic(), release=True)
+                forward_attention(active)
         return response
 
     app.on_startup.append(startup)
     app.on_shutdown.append(shutdown)
     app.on_cleanup.append(cleanup)
+    app.router.add_post(api_prefix + "/api/desktop-notifications/attention", attention)
     app.router.add_get(api_prefix + "/api/desktop-notifications/status", status)
     app.router.add_get(api_prefix + "/api/desktop-notifications/events", events)

@@ -6,6 +6,25 @@
   let source = null;
   let reconnect = null;
   let shown = 0;
+  let attentionTimer = null;
+  const clientId = crypto.randomUUID();
+  let windowFocused = document.hasFocus();
+  function sendAttention(release = false) {
+    if (!release && (!enabled() || !source || source.readyState !== EventSource.OPEN)) return;
+    const active = document.visibilityState === "visible" && windowFocused;
+    button.dataset.desktopAttention = String(active);
+    fetch(new URL("attention", base), {
+      method: "POST", credentials: "same-origin", keepalive: true,
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({client: clientId, active, release}),
+    }).then(response => {
+      button.dataset.attentionStatus = String(response.status);
+      if (!response.ok) console.warn("Desktop attention request rejected", response.status);
+    }).catch(error => {
+      button.dataset.attentionStatus = "unavailable";
+      console.warn("Desktop attention request unavailable", error.name);
+    });
+  }
   let receivedCount = 0;
   let displayedCount = 0;
   const seen = new Set();
@@ -25,19 +44,26 @@
   function remember(value) {
     try { localStorage.setItem(key, value); } catch { /* No persistence required. */ }
   }
-  function stop() {
+  function stop(release = true) {
     clearTimeout(reconnect);
+    clearInterval(attentionTimer);
+    attentionTimer = null;
+    if (release) sendAttention(true);
     reconnect = null;
     if (source) source.close();
     source = null;
   }
   function start() {
-    stop();
+    stop(false);
     if (!supported || Notification.permission !== "granted" || !enabled()) return;
     button.textContent = "🔔 通知连接中…";
-    source = new EventSource(new URL("events", base), {withCredentials: true});
+    attentionTimer = setInterval(sendAttention, 20000);
+    const eventsUrl = new URL("events", base);
+    eventsUrl.searchParams.set("client", clientId);
+    source = new EventSource(eventsUrl, {withCredentials: true});
     source.addEventListener("health", event => {
       const health = JSON.parse(event.data);
+      sendAttention();
       button.textContent = health.listener ? "🔔 桌面通知已开启" : "🔔 等待通知服务…";
       button.title = "点击关闭。仅在此页面保持连接时接收应用通知。";
     });
@@ -106,7 +132,10 @@
     if (!supported) button.title = "请使用支持通知的浏览器，通过 HTTPS 打开桌面。";
     else if (enabled()) start();
   }
-  window.addEventListener("pagehide", stop);
+  window.addEventListener("pagehide", () => stop());
+  window.addEventListener("blur", () => { windowFocused = false; button.dataset.attentionEvent = "blur"; sendAttention(); });
+  window.addEventListener("focus", () => { windowFocused = true; button.dataset.attentionEvent = "focus"; sendAttention(); });
+  document.addEventListener("visibilitychange", () => sendAttention());
   window.addEventListener("pageshow", () => { if (enabled()) start(); });
   window.addEventListener("storage", event => {
     if (event.key === key) enabled() ? start() : stop();

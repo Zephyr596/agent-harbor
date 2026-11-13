@@ -4,6 +4,7 @@ import fcntl
 import json
 from pathlib import Path
 import socket
+import signal
 import sys
 
 
@@ -20,6 +21,31 @@ def main():
         return
     sock = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
     sock.settimeout(0.2)
+    attention_socket = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
+    attention_path = state / "attention.sock"
+    if attention_path.is_socket():
+        attention_path.unlink()
+    attention_socket.bind(str(attention_path))
+    attention_path.chmod(0o600)
+    attention_socket.setblocking(False)
+    try:
+        from attention import DesktopAttention
+        attention = DesktopAttention()
+    except Exception as error:
+        attention = None
+        print("Desktop attention unavailable: " + type(error).__name__, file=sys.stderr)
+
+    def receive_attention(unused, condition):
+        for index in range(16):
+            try:
+                packet = json.loads(attention_socket.recv(256))
+            except BlockingIOError:
+                break
+            except (ValueError, UnicodeError):
+                continue
+            if attention and isinstance(packet, dict) and type(packet.get("active")) is bool:
+                attention.set_active(packet["active"])
+        return True
 
     def send(payload):
         packet = json.dumps(payload, ensure_ascii=False).encode()
@@ -53,7 +79,18 @@ def main():
     heartbeat()
     GLib.timeout_add_seconds(10, heartbeat)
     # Keep all state alive for the lifetime of the GLib loop.
-    GLib.MainLoop().run()
+    GLib.io_add_watch(attention_socket, GLib.IO_IN, receive_attention)
+    loop = GLib.MainLoop()
+    signal.signal(signal.SIGTERM, lambda unused, frame: loop.quit())
+    signal.signal(signal.SIGINT, lambda unused, frame: loop.quit())
+    try:
+        loop.run()
+    finally:
+        if attention:
+            attention.close()
+        attention_socket.close()
+        if attention_path.is_socket():
+            attention_path.unlink()
 
 
 if __name__ == "__main__":

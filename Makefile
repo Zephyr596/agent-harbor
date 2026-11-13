@@ -9,6 +9,7 @@ check:
 	python3 -m unittest discover -s tests -v
 	node --input-type=module --check < desktop/ime/selkies-core.js
 	node --check desktop/notifications/client.js
+	node --test tests/notifications-client.test.cjs
 	sh -n firewall/start.sh
 	bash -n desktop/svc-de-run
 	bash -n desktop/notifications/init.sh
