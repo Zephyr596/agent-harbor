@@ -23,7 +23,7 @@ modifications keep macOS preedit local, position the candidate anchor, deduplica
 commits, remove the transient Alt tap, and exclude Enter from the Command-to-Ctrl
 application mapping. `desktop/svc-de-run` is a small modification of the pinned
 LinuxServer startup script: bounded X readiness probes and no forced 1024x768 in
-dynamic-resolution mode.
+dynamic-resolution mode. `desktop/svc-selkies-run` modifies the same pinned base image's script to bound audio readiness/sink probes; its original SHA-256 is `a06cf2ba7e3df663c0f93c89216478c442a16d541ebc8e79cbcef449534a4797` and its upstream GPL-3.0 license continues to apply.
 
 Third-party licenses continue to apply to their respective files and container
 images. No proprietary Chrome/Claude executables or personal application data are

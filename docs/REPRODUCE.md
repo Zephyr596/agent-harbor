@@ -83,7 +83,7 @@ checksums.sha256                     # 交付文件完整性清单
 
 ### 4.1 安装宿主依赖
 
-安装 Docker Engine、Docker Compose 插件、Python 3、OpenSSH Server、Tailscale。Ubuntu 原生安装即可，不需要 NVIDIA Container Toolkit；本方案没有把 RTX GPU 设备传入容器。
+安装 Docker Engine、Docker Compose 插件、Python 3、OpenSSH Server、Tailscale。CPU 基线不需要 NVIDIA Container Toolkit；可选开发工具及 NVIDIA 原生 CDI 透传见 [开发工具与 GPU](DEVTOOLS-GPU.md)。
 
 使用各项目官方安装说明：[Docker / Ubuntu](https://docs.docker.com/engine/install/ubuntu/)、[Tailscale / Linux](https://tailscale.com/download/linux)。已有安装不要重复替换。
 
@@ -415,7 +415,7 @@ sudo docker exec sandbox-webtop s6-svstat /run/service/svc-selkies
 ## 11. 安全边界与明确未解决项
 
 - **Chromium/Electron 进程沙箱未启用。** 外层 Docker 默认 seccomp/AppArmor、NoNewPrivs、网络隔离不能替代它。
-- firewall 单独拥有 NET_ADMIN；webtop 丢弃 NET_ADMIN/NET_RAW、非 privileged、禁用 sudo。没有挂载 Docker socket、宿主 HOME、SSH agent 或 GPU。
+- firewall 单独拥有 NET_ADMIN；webtop 丢弃 NET_ADMIN/NET_RAW、非 privileged、禁用 sudo。没有挂载 Docker socket、宿主 HOME 或 SSH agent；基础配置不传 GPU，可选 GPU override 会增加对应设备/驱动接口。
 - `/config` 可被桌面用户读写；同一个 X11 桌面里的应用、剪贴板和浏览器登录态不是互相隔离的安全域。
 - 白名单允许访问代理，代理之后的最终网站不是 allowlist；它不能阻止经允许代理进行的数据外传。
 - 没有配置多租户、独立 Agent 身份授权或 root capability broker；这些不属于本次沙箱复刻。

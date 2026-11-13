@@ -68,11 +68,15 @@ services:
       GDK_DPI_SCALE: '1'
       QT_SCALE_FACTOR: '1'
       XCURSOR_SIZE: '24'
+      PULSE_SERVER: unix:/defaults/native
       DISABLE_SUDO: 'true'
       FILE_MANAGER_PATH: ${FILE_MANAGER_PATH:-/config/projects}
     volumes:
     - ./webtop-data:/config
     - ./desktop/svc-de-run:/etc/s6-overlay/s6-rc.d/svc-de/run:ro
+    - ./desktop/svc-selkies-run:/etc/s6-overlay/s6-rc.d/svc-selkies/run:ro
+    - ./desktop/svc-pulseaudio-run:/etc/s6-overlay/s6-rc.d/svc-pulseaudio/run:ro
+    - ./desktop/audio:/opt/agent-harbor/audio:ro
     - ./desktop/ime/input_handler.py:/lsiopy/lib/python3.14/site-packages/selkies/input_handler.py:ro
     - ./desktop/ime/selkies-core.js:/usr/share/selkies/selkies-dashboard/selkies-core.js:ro
     - ./desktop/ime/index-dashboard.html:/usr/share/selkies/selkies-dashboard/index.html:ro

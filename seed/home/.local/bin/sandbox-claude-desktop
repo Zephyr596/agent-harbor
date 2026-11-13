@@ -1,5 +1,9 @@
 #!/bin/sh
 set -eu
+export PATH="/config/.local/bin:$PATH"
+if [ -f /config/.local/share/sandbox-devtools/env.sh ]; then
+  . /config/.local/share/sandbox-devtools/env.sh
+fi
 ROOT=/config/proot-apps/ghcr.io_linuxserver_proot-apps_claude
 if [ ! -s "$ROOT/SHALAYER" ] || [ -e "$ROOT/DOWNLOADING" ]; then
   echo "Claude Desktop installation is incomplete; finish its update before launching." >&2

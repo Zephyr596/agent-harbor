@@ -1,0 +1,6 @@
+# Optional NVIDIA native CDI passthrough; requires host Toolkit/CDI setup.
+# Use: docker compose -f compose.yaml -f compose.gpu.yaml up -d
+services:
+  webtop:
+    devices:
+    - "${GPU_DEVICE:-nvidia.com/gpu=all}"

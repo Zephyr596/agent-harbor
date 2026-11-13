@@ -1,0 +1,3 @@
+#!/usr/bin/with-contenv bash
+# Keep recovery in the desktop user's context.
+exec s6-setuidgid abc /bin/bash /opt/agent-harbor/audio/pulse-supervisor.sh

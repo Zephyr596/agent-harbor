@@ -1,0 +1,69 @@
+{
+  "date": "2026-11-13",
+  "scope": "Authorized live source-instance maintenance plus isolated container checks",
+  "host": {
+    "os": "Ubuntu 24.04.5 x86_64",
+    "docker": "29.9.3",
+    "compose": "5.7.1",
+    "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "gpu_memory_mib": 8188,
+    "driver": "595.99.02",
+    "toolkit_base": "1.20.1-1",
+    "native_cdi": true,
+    "cdi_refresh_path_active": true,
+    "driver_replaced": false,
+    "docker_daemon_reconfigured_or_restarted": false,
+    "physical_host_reboot_tested": false
+  },
+  "contexts": {
+    "webtop_base": "Ubuntu 26.04.1; desktop Python 3.14 preserved",
+    "claude_proot": "Debian 13.7 trixie",
+    "tool_prefix": "/config/.local/share/sandbox-devtools",
+    "noninteractive_proot_entrypoints": "/usr/local/bin",
+    "versions": {"python": "3.12.16", "uv": "0.13.8", "pip": "26.3", "node": "26.13.1", "npm": "11.20.0", "pypdf": "7.0.1"},
+    "guest_debian_packages": {"sqlite3": "3.46.1-7+deb13u2", "unzip": "6.0-29+deb13u1", "poppler-utils": "25.03.0-5+deb13u4"},
+    "tools_survived_production_recreation": true,
+    "proot_minimal_path_python_pdf_sqlite_node_uv_passed": true,
+    "node_http_via_existing_proxy_status": 200,
+    "python_pdf_in_memory_roundtrip_passed": true
+  },
+  "gpu": {
+    "test": "Driver API loads a PTX kernel, writes 42 to GPU memory, synchronizes and copies it back",
+    "isolated_network_none_user1000_cap_drop_all_no_new_privileges": 42,
+    "production_webtop_user1000": 42,
+    "debian_proot_with_recorded_proot_apps_nvidia_bindings": 42,
+    "full_cuda_sdk_installed": false,
+    "ml_framework_or_model_installed": false,
+    "actual_claude_model_task_sent": false
+  },
+  "boundaries": {
+    "shared_firewall_namespace_preserved": true,
+    "direct_https_to_public_ip": "curl exit 28 at 3 second timeout",
+    "direct_public_tcp_dns": "connect_ex returned 111 (rejected)",
+    "ipv6_output_policy": "DROP",
+    "proxy_country_observed": "JP (original deployment choice, not template requirement)",
+    "ordinary_user_cap_eff": "0000000000000000",
+    "ordinary_user_no_new_privs": 1,
+    "privileged": false,
+    "desktop_sudo": false,
+    "docker_socket": false,
+    "tailscale_serve_still_configured": true
+  },
+  "desktop": {
+    "isolated_fresh_boot_with_gpu_and_persistent_patch_mounts": true,
+    "production_browser_and_claude_login_observed_after_recreation": true,
+    "notification_receiver_and_listener_available_after_recreation": true,
+    "notification_subscriber_count_observed": 1,
+    "audio_startup_stall_observed": true,
+    "audio_underlying_root_cause_confirmed": false,
+    "audio_bounded_startup_and_user_supervisor_deployed": true,
+    "audio_output_monitor_and_capture_pipeline_running_after_recovery": true,
+    "physical_audio_output_listening_test": false
+  },
+  "limitations": [
+    "No full blank-machine replay or physical-host reboot",
+    "No private-project test suite or provider API call was run",
+    "Chromium/Electron --no-sandbox and keyring limitations remain",
+    "Tool and package overlays must be reapplied after destructive PRoot app replacement"
+  ]
+}

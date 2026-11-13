@@ -12,4 +12,8 @@ check:
 	node --test tests/notifications-client.test.cjs
 	sh -n firewall/start.sh
 	bash -n desktop/svc-de-run
+	bash -n desktop/svc-selkies-run
+	bash -n desktop/svc-pulseaudio-run
+	bash -n desktop/audio/pulse-supervisor.sh
+	bash -n tools/install-guest-tools.sh
 	bash -n desktop/notifications/init.sh

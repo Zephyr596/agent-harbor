@@ -13,3 +13,6 @@ mac/webtop-ssh-tunnel.plist
 .DS_Store
 .venv/
 work/
+
+# Deployment-specific optional Compose settings
+/compose.override.yaml

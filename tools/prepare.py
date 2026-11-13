@@ -59,7 +59,8 @@ def main():
         lib=data/'.local/lib/sandbox';lib.mkdir(parents=True,exist_ok=True)
         shutil.copy2(root/'tools/install-proot-app.py',lib/'install-proot-app.py')
         for p in (data/'.local/bin').iterdir():p.chmod(0o755)
-        (root/'desktop/svc-de-run').chmod(0o755)
+        for name in ['svc-de-run', 'svc-selkies-run', 'svc-pulseaudio-run']:
+            (root/'desktop'/name).chmod(0o755)
         (root/'firewall/start.sh').chmod(0o755)
         if os.geteuid()==0:
             for parent,dirs,files in os.walk(data):

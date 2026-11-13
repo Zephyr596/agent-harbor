@@ -21,6 +21,9 @@ def main():
         (root / '.env').write_text(env_text)
         subprocess.run([sys.executable, str(root / 'tools/prepare.py')], check=True)
         subprocess.run(['docker', 'compose', '--project-directory', str(root), 'config', '--quiet'], check=True)
+        subprocess.run(['docker', 'compose', '--project-directory', str(root), '-f',
+                        str(root / 'compose.yaml'), '-f', str(root / 'compose.gpu.yaml'),
+                        'config', '--quiet'], check=True)
         env = read_env(root / '.env')
         server = json.loads((root / 'server/sing-box.shadowsocks.example.json').read_text())
         server['inbounds'][0]['password'] = 'AAAAAAAAAAAAAAAAAAAAAA=='
