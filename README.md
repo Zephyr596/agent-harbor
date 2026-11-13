@@ -30,6 +30,8 @@ Claude Desktop 启动器保留软件渲染，并使用 `--disable-http2` 缓解�
 
 文件上传入口和浏览器通知的使用方法、连接要求及验证范围见 [文件与通知](docs/FILES-NOTIFICATIONS.md)。开发工具、PRoot 两层路径及可选 GPU 配置见 [开发工具与 GPU](docs/DEVTOOLS-GPU.md)。
 
+Mac 触控板与连续滚轮的距离映射修复，以及当前 X11 的平滑滚动限制，见 [滚动映射](docs/SCROLLING.md)。
+
 ## 从这里开始
 
 目标平台：Ubuntu 24.04 / x86_64；Mac 为已验证的操作端。需要 Docker Compose、Python 3、Tailscale，以及自己的兼容代理服务器。

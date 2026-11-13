@@ -306,6 +306,8 @@ Claude Desktop 的系统钥匙串在当前环境中缺失，日志显示会话�
 
 IME 补丁：Mac 拼音 preedit 保留在本地，提交后只向远端发送一次完整文本；候选框锚定点击位置；X11 Unicode 提交使用已有的剪贴板注入，避免“他”等单字因临时键码丢失。补丁针对当前固定镜像和 Python 3.14 路径；升级镜像前必须重新比较，不能把旧大文件覆盖到不同版本后端上。
 
+Mac 的 `deltaMode=0` 滚动按像素距离累积，避免把触控板/MX Master 连续整数事件误当成每次一整格。当前 X11 后端最终仍注入滚轮按钮，不等同于原生像素级滚动；机制与更新方法见 [滚动映射](SCROLLING.md)。
+
 **干净启动检查发现的挂载修正：** 上游 `init-nginx` 每次会删除并从 `selkies-dashboard` 重建 `/usr/share/selkies/web`。直接 bind-mount `web/index.html` 或 `web/selkies-core.js` 会使删除报 `Device or resource busy`，导致 HTTPS 入口无法就绪。本包因此只挂载物理 `selkies-dashboard` 下的两个资源，让启动脚本复制补丁到 `web`；`index-web.html` 保留作快照，不直接挂载。原机正在运行的容器此前使用原地文件补丁，所以未暴露此重建问题。2026-11-13 获授权的文件/通知维护已同步删除生产 Compose 中这两个旧声明；没有重建生产容器。不能直接套用 `reference/compose.source.sanitized.yaml`。
 
 **桌面前缀：同时按 Control+Return，松开全部按键，再按下一键。** 底栏出现 `remote` 代表模式已进入，操作完成后返回普通模式。
