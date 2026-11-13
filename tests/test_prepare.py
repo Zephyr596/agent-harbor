@@ -44,6 +44,9 @@ class PreparationTests(unittest.TestCase):
         self.assertEqual(len(config['outbounds']), 1)
         self.assertEqual(len(config['dns']['servers']), 1)
         self.assertEqual(target.stat().st_mode & 0o777, 0o600)
+        self.assertTrue((self.root / 'webtop-data/.local/bin/sandbox-notification-listener').is_file())
+        self.assertTrue((self.root / 'webtop-data/.local/lib/sandbox-notifications/listener.py').is_file())
+        self.assertTrue((self.root / 'webtop-data/projects').is_dir())
         inode = target.stat().st_ino
         self.write_env({'DNS_UPSTREAM_IP=1.1.1.1': 'DNS_UPSTREAM_IP=169.254.169.253',
                         'SANDBOX_TZ=Etc/UTC': 'SANDBOX_TZ=Asia/Tokyo'})
@@ -67,6 +70,8 @@ class PreparationTests(unittest.TestCase):
             {'DNS_UPSTREAM_PORT=53': 'DNS_UPSTREAM_PORT=0'},
             {'SANDBOX_TZ=Etc/UTC': 'SANDBOX_TZ=NoSuch/Timezone'},
             {'EGRESS_SERVER_IP=192.0.2.10': 'EGRESS_SERVER_IP=proxy.invalid'},
+            {'FILE_MANAGER_PATH=/config/projects': 'FILE_MANAGER_PATH=/etc'},
+            {'FILE_MANAGER_PATH=/config/projects': 'FILE_MANAGER_PATH=/config/../etc'},
         ]:
             with self.subTest(replacements=replacements):
                 self.write_env(replacements)

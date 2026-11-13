@@ -20,10 +20,14 @@
 | 交互 | 动态分辨率、Mac 拼音提交与候选框补丁、Command 编辑与 Control 桌面控制分离 |
 | 应用 | Chrome；可选 Claude Desktop / Claude Code，由用户重新认证 |
 | 会话恢复 | 桌面启动后重开已安装应用：工作区 1 Chrome、工作区 2 Claude；跳过已有进程 |
+| 文件 | 内置 Web 文件管理器；默认 `/config/projects`，进入子目录后上传/下载 |
+| 通知 | 页面在线时将 Linux 桌面通知转为浏览器通知；用户按站点开启 |
 
 Tailscale 是进入桌面的管理通道，公网出站走所配置的代理；两条路径分开配置。首版不提供图形安装器，也没有自动根据出口切换时区、通用代理订阅管理或完整 VM 隔离。
 
 Claude Desktop 启动器保留软件渲染，并使用 `--disable-http2` 缓解源机代理链路上的冷加载延迟。工作区恢复及本机加载对照结果见 [桌面恢复与加载优化](docs/DESKTOP-RECOVERY.md)；这不是运行中进程或任意窗口布局的快照。
+
+文件上传入口和浏览器通知的使用方法、连接要求及验证范围见 [文件与通知](docs/FILES-NOTIFICATIONS.md)。
 
 ## 从这里开始
 

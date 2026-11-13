@@ -1,6 +1,6 @@
 # Agent Harbor 复刻指南
 
-更新：2026-11-12。目标平台：**Ubuntu 24.04 / x86_64，Mac 作为操作端**。
+更新：2026-11-13。目标平台：**Ubuntu 24.04 / x86_64，Mac 作为操作端**。
 
 这份交付包含当前环境的配置模板、最终桌面/输入补丁和干净的用户目录种子，供另一个 agent 在新主机上复刻。它不是个人桌面备份：**代理密码、浏览器 Cookie、Claude 登录态、SSH 私钥和 Tailscale 身份均未包含**。
 
@@ -115,6 +115,7 @@ chmod 600 .env
 - AWS 东京示例可手动合并 `examples/aws-tokyo.env.example` 的时区和 DNS 字段；非 AWS 环境不能使用其中 link-local DNS。
 - `SS_PASSWORD` 是服务端现有密码；新建服务时，`2022-blake3-aes-128-gcm` 使用编码后为 Base64 的 16 字节密钥，例如在自己的终端生成 `openssl rand -base64 16`。不要把真实值写进公开交接文档。
 - `SANDBOX_UID` / `SANDBOX_GID` 对应持久目录的拥有者，默认 1000。
+- `FILE_MANAGER_PATH` 是浏览器文件管理根目录，默认 `/config/projects`，必须位于 `/config/` 下。文件操作和在线桌面通知见 [使用指南](FILES-NOTIFICATIONS.md)。
 - 保留三个 `*_IMAGE` 摘要。不要改回 `latest` 或自动升级 Webtop。
 
 源机原 Compose 使用可变标签；本交付将**当时实际运行的镜像摘要**固定下来。`browser-sandbox-firewall` 是本地构建镜像，不能把其本地镜像 ID 当作可从公共仓库下载的制品；它由 `firewall/Dockerfile` 重建。
@@ -305,7 +306,7 @@ Claude Desktop 的系统钥匙串在当前环境中缺失，日志显示会话�
 
 IME 补丁：Mac 拼音 preedit 保留在本地，提交后只向远端发送一次完整文本；候选框锚定点击位置；X11 Unicode 提交使用已有的剪贴板注入，避免“他”等单字因临时键码丢失。补丁针对当前固定镜像和 Python 3.14 路径；升级镜像前必须重新比较，不能把旧大文件覆盖到不同版本后端上。
 
-**干净启动检查发现的挂载修正：** 上游 `init-nginx` 每次会删除并从 `selkies-dashboard` 重建 `/usr/share/selkies/web`。直接 bind-mount `web/index.html` 或 `web/selkies-core.js` 会使删除报 `Device or resource busy`，导致 HTTPS 入口无法就绪。本包因此只挂载物理 `selkies-dashboard` 下的两个资源，让启动脚本复制补丁到 `web`；`index-web.html` 保留作快照，不直接挂载。原机正在运行的容器此前使用原地文件补丁，所以未暴露此重建问题；本轮没有修改原机的生产 Compose。未来在原机重建时也要同步这个挂载修正，不能直接套用 `reference/compose.source.sanitized.yaml`。
+**干净启动检查发现的挂载修正：** 上游 `init-nginx` 每次会删除并从 `selkies-dashboard` 重建 `/usr/share/selkies/web`。直接 bind-mount `web/index.html` 或 `web/selkies-core.js` 会使删除报 `Device or resource busy`，导致 HTTPS 入口无法就绪。本包因此只挂载物理 `selkies-dashboard` 下的两个资源，让启动脚本复制补丁到 `web`；`index-web.html` 保留作快照，不直接挂载。原机正在运行的容器此前使用原地文件补丁，所以未暴露此重建问题。2026-11-13 获授权的文件/通知维护已同步删除生产 Compose 中这两个旧声明；没有重建生产容器。不能直接套用 `reference/compose.source.sanitized.yaml`。
 
 **桌面前缀：同时按 Control+Return，松开全部按键，再按下一键。** 底栏出现 `remote` 代表模式已进入，操作完成后返回普通模式。
 

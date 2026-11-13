@@ -30,4 +30,12 @@ images. No proprietary Chrome/Claude executables or personal application data ar
 redistributed in this package; installation downloads the recorded public
 upstream artifacts separately.
 
+`desktop/notifications/install.py` (MPL-2.0) generates a small modification of
+Selkies `stream_server.py` and preserves its upstream notices. The accepted base
+SHA-256 is `82cf2855de173bd8e7e3e90f544c1486a0c327771c1d275998e212ff7a7738cb`;
+the installer includes the complete generated hook source. The independent
+notification server, browser client and user-session listener are original MIT
+code. The existing Selkies MPL text in `licenses/Selkies-LICENSE` applies to the
+generated upstream-file modification.
+
 The root MIT LICENSE covers original Agent Harbor tools and documentation; it does not relicense the third-party sources or modifications above. No Claude-Cage code has been imported.

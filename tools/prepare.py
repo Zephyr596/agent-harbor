@@ -29,6 +29,9 @@ def main():
     dns_port=int(env['DNS_UPSTREAM_PORT'])
     if not 1<=dns_port<=65535:raise ValueError('Invalid DNS TCP port')
     ZoneInfo(env['SANDBOX_TZ'])
+    file_root=env.get('FILE_MANAGER_PATH','/config/projects')
+    if not file_root.startswith('/config/') or '..' in Path(file_root).parts:
+        raise ValueError('FILE_MANAGER_PATH must be an absolute directory below /config')
     if env.get('EXPECTED_EGRESS_IP'):ipaddress.IPv4Address(env['EXPECTED_EGRESS_IP'])
     uid,gid=int(env['SANDBOX_UID']),int(env['SANDBOX_GID'])
     if uid<=0 or gid<=0:raise ValueError('Desktop UID/GID must be non-root')
@@ -48,6 +51,7 @@ def main():
     if not args.config_only:
         data.mkdir(mode=0o700,exist_ok=True)
         shutil.copytree(root/'seed/home',data,dirs_exist_ok=True)
+        (data/Path(file_root).relative_to('/config')).mkdir(parents=True,exist_ok=True)
         public=data/'.local/share/sandbox';public.mkdir(parents=True,exist_ok=True)
         for src in [root/'apps.lock.json',root/'policies/chrome-managed.json']:
             shutil.copy2(src,public/src.name)

@@ -246,3 +246,4 @@ for_window [class="SandboxLauncher"] floating enable, move position center
 assign [class="^Google-chrome$"] 1
 assign [class="^com[.]anthropic[.]Claude$"] 2
 exec --no-startup-id /config/.local/bin/sandbox-session-restore
+exec --no-startup-id /config/.local/bin/sandbox-notification-listener

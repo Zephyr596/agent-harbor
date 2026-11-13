@@ -1,0 +1,41 @@
+{
+  "observed_date": "2026-11-13",
+  "source": "authorized maintenance on existing desktop",
+  "files": {
+    "default_root": "/config/projects",
+    "subdirectory_created_in_web_ui": true,
+    "mac_https_same_upload_api_bytes": 125,
+    "fresh_web_ui_lists_file": true,
+    "browser_download_roundtrip_sha256": "21e680e65f09b67abe52abc8e549ea39f6da4022d38b71ce80cb9cbeecc6b56e",
+    "roundtrip_matches": true,
+    "automated_browser_file_chooser": "blocked by extension file-URL permission; permission was not expanded"
+  },
+  "notifications": {
+    "synthetic_linux_notices_received_in_browser": 2,
+    "browser_notification_onshow_count": 2,
+    "native_browser_tab_was_switched": true,
+    "reported_event_document_visibility": "visible",
+    "hidden_document_state_independently_validated": false,
+    "actual_claude_task_notification_tested": false,
+    "production_receiver_available": true,
+    "production_listener_heartbeat": true,
+    "offline_push_or_history": false
+  },
+  "isolated_http_integration": {
+    "event_loop": "uvloop",
+    "unauthenticated_status": 401,
+    "viewer_status_and_stream": 403,
+    "controller_status": 200,
+    "cross_site_denied": true,
+    "sse_delivery": true,
+    "socket_permission": "0600",
+    "socket_cleanup": true,
+    "receiver_fault_does_not_prevent_http_startup": true
+  },
+  "deployment": {
+    "chrome_claude_i3_processes_preserved": true,
+    "new_tcp_ports_or_container_capabilities": false,
+    "full_container_recreate_tested": false,
+    "host_reboot_tested": false
+  }
+}

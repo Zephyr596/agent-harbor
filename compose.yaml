@@ -69,12 +69,15 @@ services:
       QT_SCALE_FACTOR: '1'
       XCURSOR_SIZE: '24'
       DISABLE_SUDO: 'true'
+      FILE_MANAGER_PATH: ${FILE_MANAGER_PATH:-/config/projects}
     volumes:
     - ./webtop-data:/config
     - ./desktop/svc-de-run:/etc/s6-overlay/s6-rc.d/svc-de/run:ro
     - ./desktop/ime/input_handler.py:/lsiopy/lib/python3.14/site-packages/selkies/input_handler.py:ro
     - ./desktop/ime/selkies-core.js:/usr/share/selkies/selkies-dashboard/selkies-core.js:ro
     - ./desktop/ime/index-dashboard.html:/usr/share/selkies/selkies-dashboard/index.html:ro
+    - ./desktop/notifications:/opt/agent-harbor/notifications:ro
+    - ./desktop/notifications/init.sh:/custom-cont-init.d/60-desktop-notifications:ro
     shm_size: 1gb
     restart: unless-stopped
     security_opt:

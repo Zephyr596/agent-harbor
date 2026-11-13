@@ -1,0 +1,4 @@
+#!/bin/sh
+state="${HOME:-/config}/.local/state/sandbox-notifications"
+mkdir -p "$state"
+exec /usr/bin/python3 /config/.local/lib/sandbox-notifications/listener.py >> "$state/listener.log" 2>&1
