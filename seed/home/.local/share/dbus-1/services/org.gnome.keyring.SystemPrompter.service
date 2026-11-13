@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=org.gnome.keyring.SystemPrompter
+Exec=/config/.local/bin/sandbox-secret-service prompt

@@ -15,6 +15,8 @@ function fixture() {
     addEventListener:(name, fn)=>docEvents.set(name, fn), body:{appendChild(){}},
   };
   const streams = [];
+  const host = {prepend(element) {element.parentElement = host;}};
+  document.querySelector = () => host;
   class EventSource {
     static OPEN = 1; static CLOSED = 2;
     constructor() { this.readyState = 1; this.events = new Map(); streams.push(this); }
@@ -24,6 +26,7 @@ function fixture() {
   class Notification { static permission = 'granted'; }
   const sandbox = {
     document, window:{isSecureContext:true, Notification, addEventListener:(name, fn)=>events.set(name, fn)},
+    MutationObserver:class {observe(){}},
     EventSource, Notification, URL, crypto:{randomUUID:()=> 'test-controller-0001'},
     localStorage:{getItem:()=> 'enabled', setItem(){}},
     fetch:(url, options)=>{requests.push(JSON.parse(options.body));return Promise.resolve({ok:true,status:200});},
@@ -32,7 +35,7 @@ function fixture() {
   };
   vm.runInNewContext(code, sandbox);
   streams.at(-1).events.get('health')({data:JSON.stringify({listener:true})});
-  return {events, docEvents, document, requests, intervals, streams, button};
+  return {events, docEvents, document, requests, intervals, streams, button, host};
 }
 
 test('blur remains inactive through heartbeats even when hasFocus is stale', () => {
@@ -59,4 +62,13 @@ test('initial connection does not race an unnecessary release request', () => {
   const f = fixture();
   assert.equal(f.requests.some(request=>request.release), false);
   assert.equal(f.streams.length, 1);
+});
+
+// The notification control must not cover application toasts or the composer.
+test('notification toggle docks inside the Selkies sidebar', () => {
+  const f = fixture();
+  assert.equal(f.button.parentElement, f.host);
+  assert.equal(f.button.hidden, false);
+  assert.match(f.button.style.cssText, /position:static/);
+  assert.doesNotMatch(f.button.style.cssText, /position:fixed|z-index/);
 });

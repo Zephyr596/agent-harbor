@@ -15,5 +15,10 @@ export NO_PROXY=localhost,127.0.0.1,::1 no_proxy=localhost,127.0.0.1,::1
 export LANG=en_US.UTF-8 LANGUAGE=en_US:en
 export GDK_SCALE=1 GDK_DPI_SCALE=1 QT_SCALE_FACTOR=1
 mkdir -p /config/.local/state/claude-desktop
+if [ -x "$ROOT/usr/bin/gnome-keyring-daemon" ] && [ -n "${DBUS_SESSION_BUS_ADDRESS:-}" ]; then
+  # i3 has a session bus but is not automatically detected as a GNOME desktop.
+  /config/.local/bin/proot -R "$ROOT" /usr/bin/dbus-update-activation-environment DISPLAY XDG_RUNTIME_DIR || :
+  set -- --password-store=gnome-libsecret "$@"
+fi
 # HTTP/1.1 avoids the observed slow cold loads over this desktop proxy path.
 exec /config/.local/bin/proot-apps run ghcr.io/linuxserver/proot-apps:claude --proxy-server=http://127.0.0.1:2080 --ozone-platform=x11 --lang=en-US --disable-gpu --disable-http2 "$@" >> /config/.local/state/claude-desktop/launch.log 2>&1

@@ -4,7 +4,7 @@
 
 出口服务器、DNS 上游与时区由部署参数决定。东京是最初运行实例和一个可选预设，不是方案依赖。首版支持 Shadowsocks-2022 / IPv4 TCP 后端；其他代理类型尚未实现。
 
-**状态：实验性复刻基线。** 已有运行实例和隔离启动验证，尚未完成第二台空白机器的全流程重放。Chrome / Electron 的 `--no-sandbox` 和 Claude Desktop 钥匙串仍是已知缺口，不能把它当成完整的浏览器进程沙箱或多租户系统。
+**状态：实验性复刻基线。** 已有运行实例和隔离启动验证，尚未完成第二台空白机器的全流程重放。Chrome / Electron 的 `--no-sandbox` 仍是已知缺口，不能把它当成完整的浏览器进程沙箱或多租户系统。Claude 可选加密钥匙串已加入，但首次设置、会话解锁和整机重启验收需单独完成。
 
 [完整复刻指南](docs/REPRODUCE.md) · [验证记录](validation/DELIVERY-VALIDATION.md) · [后续路线图](docs/ROADMAP.md) · [贡献](CONTRIBUTING.md)
 
@@ -31,6 +31,8 @@ Claude Desktop 启动器保留软件渲染，并使用 `--disable-http2` 缓解�
 文件上传入口和浏览器通知的使用方法、连接要求及验证范围见 [文件与通知](docs/FILES-NOTIFICATIONS.md)。开发工具、PRoot 两层路径及可选 GPU 配置见 [开发工具与 GPU](docs/DEVTOOLS-GPU.md)。
 
 Mac 触控板与连续滚轮的距离映射修复，以及当前 X11 的平滑滚动限制，见 [滚动映射](docs/SCROLLING.md)。
+
+可选的 Claude 加密凭据服务、首次钥匙串设置和外部浏览器处理器见 [凭据与授权跳转](docs/SECRET-SERVICE.md)。
 
 ## 从这里开始
 

@@ -288,7 +288,7 @@ claude --version
 - CLI：`claude`。它与桌面包内自带的 Claude Code 组件不是同一个安装入口。
 - 启动器是 xterm + Python curses 的小菜单，**不是自动扫描所有 .desktop 的完整桌面菜单**。现有四项：浏览器、终端、运行命令、Claude Desktop。新增应用可先选第 3 项运行命令，再修改 `sandbox-app-menu.py` 加入固定入口。
 
-Claude Desktop 的系统钥匙串在当前环境中缺失，日志显示会话持久化受限；重启后可能需要重新登录。没有用明文持久化绕过这个问题。能打开聊天界面也不表示 Cowork、虚拟机、GPU、全部 Code/宿主能力都已在 PRoot 中验收。
+基础镜像不包含 Claude Desktop 的系统钥匙串；可选安装与用户首次设置见 [凭据与授权跳转](SECRET-SERVICE.md)。源机已验证加密存取和应用重开，完整宿主重启及新会话解锁仍需验收。没有用明文持久化绕过这个问题。能打开聊天界面也不表示 Cowork、虚拟机、GPU、全部 Code/宿主能力都已在 PRoot 中验收。
 
 ### 桌面工作区自动恢复
 
@@ -423,7 +423,7 @@ sudo docker exec sandbox-webtop s6-svstat /run/service/svc-selkies
 - 没有配置多租户、独立 Agent 身份授权或 root capability broker；这些不属于本次沙箱复刻。
 - Tailscale Serve 不是 Webtop 内部的细粒度权限系统；控制谁能连到 443 就是在控制谁能操作桌面。
 - 时区、英语和所选出口只说明配置及检测结果，不保证任意网站的 GeoIP 判断，也不把机房 IP 变成住宅 IP。
-- Claude Desktop 钥匙串、完整 Chromium 沙箱、严格冷启动网络竞态及全部 Cowork/Code 能力仍需独立验收。
+- 钥匙串跨桌面会话解锁、完整 Chromium 沙箱、严格冷启动网络竞态及全部 Cowork/Code 能力仍需独立验收。
 
 不得为“让它启动”而添加 privileged、SYS_ADMIN、unconfined、任意 sudo、host network 或禁用宿主安全策略。
 

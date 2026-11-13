@@ -33,7 +33,9 @@
   button.className = "allow-native-input";
   button.type = "button";
   button.textContent = "🔔 开启桌面通知";
-  button.style.cssText = "position:fixed;right:16px;bottom:44px;z-index:2147483000;padding:7px 11px;border:1px solid #8b91a0;border-radius:8px;background:#20242c;color:#fff;font:13px sans-serif;cursor:pointer";
+  // Keep controls inside Selkies chrome, never above the remote application's UI.
+  button.hidden = true;
+  button.style.cssText = "position:static;width:100%;margin:8px 0;padding:7px 11px;border:1px solid #8b91a0;border-radius:8px;background:#20242c;color:#fff;font:13px sans-serif;cursor:pointer";
   ["pointerdown", "pointerup", "mousedown", "mouseup"].forEach(type => {
     button.addEventListener(type, event => event.stopPropagation());
   });
@@ -128,7 +130,15 @@
     remember("enabled"); start();
   });
   function mount() {
-    document.body.appendChild(button);
+    function dock() {
+      const host = document.querySelector("#dashboard-root .sidebar-footer");
+      if (host && button.parentElement !== host) host.prepend(button);
+      button.hidden = !host;
+    }
+    // The React dashboard mounts asynchronously and can replace its layout.
+    const observer = new MutationObserver(dock);
+    observer.observe(document.body, {childList:true, subtree:true});
+    dock();
     if (!supported) button.title = "请使用支持通知的浏览器，通过 HTTPS 打开桌面。";
     else if (enabled()) start();
   }

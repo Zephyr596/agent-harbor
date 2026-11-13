@@ -16,4 +16,8 @@ check:
 	bash -n desktop/svc-pulseaudio-run
 	bash -n desktop/audio/pulse-supervisor.sh
 	bash -n tools/install-guest-tools.sh
+	bash -n tools/install-secret-service.sh
+	sh -n seed/home/.local/bin/sandbox-secret-service
+	sh -n seed/home/.local/bin/sandbox-claude-desktop
+	bash -n seed/home/.local/lib/sandbox-links/xdg-open
 	bash -n desktop/notifications/init.sh

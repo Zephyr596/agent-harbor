@@ -1,0 +1,5 @@
+#!/bin/bash
+# The PRoot Apps host socket consumes one bash command per line.
+# Preserve each argument as data, including OAuth query strings and quotes.
+set -euo pipefail
+{ printf 'xdg-open'; printf ' %q' "$@"; printf '\n'; } | nc -w 5 -N -U /system.socket
