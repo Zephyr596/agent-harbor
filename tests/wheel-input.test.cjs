@@ -43,25 +43,26 @@ function fixture({mac = true, finger = false} = {}) {
   return {input,pulses,calls,wheel};
 }
 
-test('Mac integer pixel deltas retain distance, instead of one notch per event', () => {
+test('tiny Mac integer deltas accumulate, instead of one notch per event', () => {
   const f = fixture();
   for (let i = 0; i < 100; i++) f.wheel(1);
-  assert.deepEqual(f.pulses, [['y','down',1]]);
+  assert.equal(f.pulses.reduce((sum,p)=>sum+p[2],0),8);
 });
 test('accelerated MX Master deltas keep their relative travel and remainder', () => {
   const f = fixture();
   [12,13,103,103,205].forEach(y=>f.wheel(y));
-  assert.equal(f.pulses.reduce((sum,p)=>sum+p[2],0),4);
-  assert(Math.abs(f.input._wheelAccumY - 0.36) < 1e-8);
+  assert.equal(f.pulses.reduce((sum,p)=>sum+p[2],0),6);
+  assert(Math.abs(f.input._wheelAccumY - 0.11) < 1e-8);
 });
 test('subpixel movement accumulates and diagonal touchpad noise does not jump sideways', () => {
   const f = fixture();
   for (let i = 0; i < 404; i++) f.wheel(0.25,0.01);
-  assert.deepEqual(f.pulses, [['y','down',1]]);
+  assert.equal(f.pulses.reduce((sum,p)=>sum+p[2],0),8);
+  assert(f.pulses.every(p=>p[0] === 'y'));
 });
 test('reversing direction cancels the previous fractional movement', () => {
   const f = fixture();
-  f.wheel(75); f.wheel(-25); f.wheel(-75);
+  f.wheel(3); f.wheel(-6); f.wheel(-6);
   assert.deepEqual(f.pulses, [['y','up',1]]);
 });
 test('pinch zoom remains separate and a supported finger-scroll path is preserved', () => {
@@ -73,4 +74,16 @@ test('pinch zoom remains separate and a supported finger-scroll path is preserve
 test('non-Mac detent wheels retain the upstream path', () => {
   const f = fixture({mac:false}); f.wheel(4);
   assert.deepEqual(f.pulses, [['y','down',1]]);
+});
+
+test('a slow MX Master step and a short gentle trackpad stroke respond promptly', () => {
+  const mouse = fixture(); mouse.wheel(12);
+  assert.deepEqual(mouse.pulses, [['y','down',1]]);
+  const trackpad = fixture(); [4,4,4].forEach(y=>trackpad.wheel(y));
+  assert.deepEqual(trackpad.pulses, [['y','down',1]]);
+});
+test('fast scrolling retains the previous high-speed distance scale', () => {
+  const f = fixture(); [100,205,505].forEach(y=>f.wheel(y));
+  assert.equal(f.pulses.reduce((sum,p)=>sum+p[2],0),8);
+  assert(Math.abs(f.input._wheelAccumY - 0.1) < 1e-8);
 });

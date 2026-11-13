@@ -4,9 +4,11 @@
 
 原 Selkies bundle 的 `_isDetentWheel` 会把这些事件逐个转换成一整格，丢失速度、减速和距离差异；触控板 1 px 的横向偏移也会变成整格横滚。
 
-本包在 `_mouseWheelWrapper` 的 pinch 检查后、detent 检查前，为 Mac 像素事件增加独立路径：支持服务端 finger scroll 时沿用该通道，否则通过 `_addWheelNotches(deltaY / 100, deltaX / 100)` 累积距离。100 CSS px 转换成一格是本包的 X11 折中映射，沿用上游连续滚动路径的比例。余量留到后续事件，同轴反向时清除旧方向余量；不把每次事件强行放大为一格，也不使用最小采样值重新学习速度。Ctrl+触控板缩放、非 Mac 与非像素滚轮保留原路径。
+本包在 `_mouseWheelWrapper` 的 pinch 检查后、detent 检查前，为 Mac 像素事件增加独立路径：支持服务端 finger scroll 时沿用该通道，否则累积成 X11 滚轮按钮。余量留到后续事件，同轴反向时清除旧方向余量；Ctrl+触控板缩放、非 Mac 与非像素滚轮保留原路径。
 
-修改位于 `desktop/ime/selkies-core.js`；两个 HTML 快照中的 `scrollfix=macpixels1` 使刷新后重新加载 bundle。`tests/wheel-input.test.cjs` 从交付的 bundle 提取真实方法，检查距离、加速、小数、横向偏移、反向、缩放与旧路径。
+首次尝试统一使用 100 CSS px/格，用户反馈快速滚动可用但轻微滚动几乎失效，因此已被第二版替换。第二版竖直滚动使用连续、单调的响应曲线：`sign(d) * max(abs(d)/100, min(abs(d)/12, 1))`。小于 12 px 的移动按距离累积，12–100 px 的单次事件对应一格，100 px 以上沿用第一版的快速滚动比例。这样 12 px 的鼠标轻滚可立即响应，三次 4 px 的触控板事件也能触发一格；不是把所有小事件都强行变成一格。横向仍按 100 CSS px/格积累，避免轻微斜滑放大成横跳。该曲线是本包的响应性折中，输出受 X11 按钮粒度限制，并非像素距离的一比一还原。
+
+修改位于 `desktop/ime/selkies-core.js`；两个 HTML 快照中的 `scrollfix=macpixels2` 使刷新后重新加载 bundle。`tests/wheel-input.test.cjs` 从交付的 bundle 提取真实方法，检查轻滚起步、快速比例、小数、横向偏移、反向、缩放与旧路径。
 
 这项修复减少异常跳跃，**不提供 X11 的像素级滚动注入**。当前后端最终仍注入 XTest 4/5/6/7 按钮，动画平滑度还依赖远端应用、编码与网络。要实现端到端触控板精细滚动，需要另行验证支持 finger-scroll 的 Wayland 桌面，不能仅给当前 i3 会话打开一个开关。
 
