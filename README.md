@@ -34,6 +34,8 @@ Mac 触控板与连续滚轮的距离映射修复，以及当前 X11 的平滑�
 
 可选的 Claude 加密凭据服务、首次钥匙串设置和外部浏览器处理器见 [凭据与授权跳转](docs/SECRET-SERVICE.md)。
 
+远程 Chrome 使用 1Password Passkey 的配置方式，以及手机扫码所需的蓝牙边界，见 [Passkey 登录](docs/PASSKEYS.md)。
+
 ## 从这里开始
 
 目标平台：Ubuntu 24.04 / x86_64；Mac 为已验证的操作端。需要 Docker Compose、Python 3、Tailscale，以及自己的兼容代理服务器。
