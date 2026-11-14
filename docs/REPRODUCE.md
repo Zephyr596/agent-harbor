@@ -267,6 +267,8 @@ proot: ... /usr/bin/bash: cannot open its interpreter (errno 2)
 
 这可能是动态加载器尚未解压，不代表应当给桌面增加 root 权限。[PRoot Apps 实现](https://github.com/linuxserver/proot-apps)。如果固定层已被仓库清理，不要静默切换最新层；记录版本变化后重新验收，或使用部署者私下保存的固定制品。
 
+已有环境的 Claude Desktop 增量包升级、备份和回滚见 [Claude 更新](CLAUDE-UPDATES.md)。直接替换整个应用层会覆盖后装组件。
+
 ### Claude Code，可选
 
 在 Webtop 终端中使用官方安装器，先下载再运行：
