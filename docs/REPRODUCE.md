@@ -95,6 +95,8 @@ docker compose version
 
 本方案不修改宿主时区、默认路由、Mihomo/Clash、主机 DNS 或防火墙全局策略。若主机已经加入 tailnet，保留现有 Tailscale 参数，不要无条件执行 `tailscale up --reset`。
 
+笔记本作为长期运行宿主机时，可显式配置[接电合盖不挂起](HOST-POWER.md)。宿主机挂起会同时暂停沙盒和两个管理通道；此选项不由部署工具自动修改。
+
 ### 4.2 放置交付目录并填写参数
 
 将整个交付目录放在例如 `/home/<operator>/browser-sandbox`。后续 Ubuntu 命令均在该目录执行。
