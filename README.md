@@ -54,7 +54,7 @@ sudo docker exec -u abc -i sandbox-webtop /bin/bash -s < tools/install-secret-se
 已有实例出现升级提示时，先备份应用层、个人配置与钥匙串，再在现有 PRoot 内安装经过 SHA-256 校验的官方 `.deb`。这样可保留后装的钥匙串、浏览器授权跳转和开发工具。`proot-apps update claude` 会重建应用层，仓库安装器的 `--replace` 会重装锁定基线。见 [升级步骤和版本记录](docs/CLAUDE-UPDATES.md)。
 
 - **项目环境**。Code 本地会话可选择 `/config/projects` 下的项目。修改已保存的 Environment 变量后，从该环境新建会话即可读取新值。见 [本地会话环境变量](https://code.claude.com/docs/en/desktop#set-environment-variables-for-local-sessions)。
-- **Mac 长文本粘贴**。Selkies 用 Chrome 粘贴事件携带的文本传给远程桌面，再触发远端粘贴。已在测试窗口验证 320 行中英文、换行和 emoji 完整送达。见 [剪贴板回归测试](tests/clipboard-paste.test.cjs)。
+- **Mac 长文本粘贴**。Selkies 从 Chrome 的原生粘贴事件取内容，传输完成后才触发远端粘贴。浏览器菜单或剪贴板历史工具发出的原生粘贴也可走这条路径。测试覆盖缺少按键事件、连续粘贴和跨分片的 UTF-8 长文本。见 [剪贴板回归测试](tests/clipboard-paste.test.cjs)。
 - **验收范围**。源机已验证新版正常启动、原账号继续登录和历史会话可见。完整宿主重启后的钥匙串解锁仍待验收。Cowork 在 Linux 上另需 QEMU 和 KVM，本方案尚未验收这条路径。Claude 的 Computer Use 和语音听写以官方 Linux beta 支持范围为准。见 [Cowork 要求](https://code.claude.com/docs/en/desktop-linux#cowork-requirements)和 [Linux beta 功能范围](https://code.claude.com/docs/en/desktop-linux#whats-not-in-the-linux-beta-yet)。
 
 ## 从这里开始
