@@ -47,6 +47,9 @@ class PreparationTests(unittest.TestCase):
         self.assertTrue((self.root / 'webtop-data/.local/bin/sandbox-notification-listener').is_file())
         self.assertTrue((self.root / 'webtop-data/.local/lib/sandbox-notifications/listener.py').is_file())
         self.assertTrue((self.root / 'webtop-data/projects').is_dir())
+        for name in ['install-proot-app.py', 'install-secret-service.sh', 'update-claude.py']:
+            self.assertTrue((self.root / 'webtop-data/.local/lib/sandbox' / name).is_file())
+        self.assertTrue((self.root / 'webtop-data/.local/share/sandbox/claude-update.lock.json').is_file())
         inode = target.stat().st_ino
         self.write_env({'DNS_UPSTREAM_IP=1.1.1.1': 'DNS_UPSTREAM_IP=169.254.169.253',
                         'SANDBOX_TZ=Etc/UTC': 'SANDBOX_TZ=Asia/Tokyo'})

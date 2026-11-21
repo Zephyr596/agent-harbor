@@ -242,3 +242,9 @@ def install(app, supervisor, api_prefix):
     app.router.add_post(api_prefix + "/api/desktop-notifications/attention", attention)
     app.router.add_get(api_prefix + "/api/desktop-notifications/status", status)
     app.router.add_get(api_prefix + "/api/desktop-notifications/events", events)
+    # A separate module keeps desktop operations independent of notification opt-in.
+    from importlib.util import spec_from_file_location, module_from_spec
+    spec = spec_from_file_location("agent_harbor_controls", Path(__file__).with_name("controls.py"))
+    controls = module_from_spec(spec)
+    spec.loader.exec_module(controls)
+    controls.install(app, supervisor, api_prefix)

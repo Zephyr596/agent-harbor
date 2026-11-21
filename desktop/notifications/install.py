@@ -48,10 +48,10 @@ def main():
         return
     # Keep existing bind-mount inodes intact.
     target.write_text(result)
-    source = Path(__file__).parent / "client.js"
     for folder in [Path("/usr/share/selkies/selkies-dashboard"), Path("/usr/share/selkies/web")]:
         if folder.is_dir():
-            shutil.copy2(source, folder / "desktop-notifications.js")
+            for source, name in [("client.js", "desktop-notifications.js"), ("controls.js", "desktop-controls.js")]:
+                shutil.copy2(Path(__file__).parent / source, folder / name)
     print("Desktop notifications hook and file-manager environment prepared")
 
 

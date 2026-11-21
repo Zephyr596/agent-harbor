@@ -5,6 +5,10 @@ if [ -f /config/.local/share/sandbox-devtools/env.sh ]; then
   . /config/.local/share/sandbox-devtools/env.sh
 fi
 ROOT=/config/proot-apps/ghcr.io_linuxserver_proot-apps_claude
+if [ -e /config/.local/state/sandbox-apps/claude.updating ]; then
+  echo "Claude update is in progress or needs recovery; check the Harbor operation log and backup." >&2
+  exit 1
+fi
 if [ ! -s "$ROOT/SHALAYER" ] || [ -e "$ROOT/DOWNLOADING" ]; then
   echo "Claude Desktop installation is incomplete; finish its update before launching." >&2
   exit 1

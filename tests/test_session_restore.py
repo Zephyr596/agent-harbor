@@ -59,6 +59,13 @@ class SessionRestoreTests(unittest.TestCase):
                  'window_properties': {'class': 'com.anthropic.Claude'}}]}]}
         self.assertIn('com.anthropic.Claude', RESTORE['window_classes'](tree))
 
+    def test_interrupted_update_is_not_auto_started(self):
+        self.install('claude')
+        marker = self.home / '.local/state/sandbox-apps/claude.updating'
+        marker.parent.mkdir(parents=True)
+        marker.write_text('/config/private-backup.tar.gz\n')
+        self.assertEqual(self.plan()['claude']['action'], 'update-needs-completion')
+
 
 if __name__ == '__main__':
     unittest.main()

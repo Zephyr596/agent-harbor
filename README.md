@@ -8,6 +8,26 @@
 
 [完整复刻指南](docs/REPRODUCE.md) · [验证记录](validation/DELIVERY-VALIDATION.md) · [后续路线图](docs/ROADMAP.md) · [贡献](CONTRIBUTING.md)
 
+## 桌面操作预览
+
+打开 Selkies 侧边栏，展开 **Harbor 常用操作**，即可打开 Claude、浏览器和终端，切换工作区，并查看安装状态与操作日志。未安装的应用会显示安装按钮；更新 Claude 前先从应用菜单正常退出，面板会校验安装包、备份，再更新到仓库验证版本。
+
+Harbor 默认折叠，浏览器会记住展开状态。关闭 Selkies 侧边栏后，Harbor 一起隐藏，桌面不保留额外悬浮按钮。
+
+以下为干净演示画面，使用项目面板与固定版本 Selkies 样式；桌面背景及应用状态为演示数据，不包含真实账号或会话。具体接入与使用步骤见 [常用操作面板](docs/DESKTOP-CONTROLS.md)。
+
+**侧边栏入口**：Harbor 位于原生设置列表顶部，和其他设置一样可展开、收起。
+
+![Selkies 侧边栏中的 Harbor 常用操作入口](docs/images/harbor-sidebar-collapsed.png)
+
+**展开常用操作**：应用入口、工作区、更新和日志集中在侧边栏内。
+
+![展开 Harbor 后的 Claude、浏览器、终端与工作区按钮](docs/images/harbor-sidebar-expanded.png)
+
+**收起侧边栏**：Harbor 随侧边栏隐藏，只保留 Selkies 原生侧边栏把手。
+
+![关闭侧边栏后没有额外 Harbor 悬浮按钮的演示桌面](docs/images/harbor-sidebar-hidden.png)
+
 ## 已有能力
 
 | 范围 | 当前实现 |
@@ -19,6 +39,7 @@
 | 可复刻性 | 镜像摘要与 PRoot 应用层锁定，干净 HOME 种子，安装和只读验收工具 |
 | 交互 | 动态分辨率、Mac 拼音与候选框、长文本粘贴、Command 编辑与 Control 桌面控制分离 |
 | 应用 | Chrome、可选的 Claude Desktop（Linux beta）和独立 Claude Code CLI |
+| 常用操作 | Selkies 侧边栏内的 Harbor 折叠面板：打开应用、安装浏览器 / Claude、更新 Claude、切换工作区与查看进度 |
 | 开发工具 / GPU | 可选持久 Python / uv / Node / PDF 工具；NVIDIA 原生 CDI 透传及 CUDA 计算验收 |
 | 会话恢复 | 桌面启动后重开已安装应用：工作区 1 Chrome、工作区 2 Claude；跳过已有进程 |
 | 文件 | 内置 Web 文件管理器；默认 `/config/projects`，进入子目录后上传/下载 |
@@ -28,6 +49,8 @@ Tailscale 是进入桌面的管理通道，公网出站走所配置的代理；�
 
 文件上传入口和浏览器通知的使用方法、连接要求及验证范围见 [文件与通知](docs/FILES-NOTIFICATIONS.md)。开发工具、PRoot 两层路径及可选 GPU 配置见 [开发工具与 GPU](docs/DEVTOOLS-GPU.md)。
 
+进入桌面后，打开 Selkies 侧边栏，展开 **Harbor 常用操作** 即可安装或打开浏览器、Claude 与终端。更新 Claude 前先正常退出应用；面板会安装仓库验证版本并备份现有应用层和个人状态。新手步骤、已有部署接入和失败恢复见 [常用操作面板](docs/DESKTOP-CONTROLS.md)。
+
 Mac 触控板与连续滚轮的距离映射修复，以及当前 X11 的平滑滚动限制，见 [滚动映射](docs/SCROLLING.md)。
 
 远程 Chrome 使用 1Password Passkey 的配置方式，以及手机扫码所需的蓝牙边界，见 [Passkey 登录](docs/PASSKEYS.md)。
@@ -36,7 +59,7 @@ Mac 触控板与连续滚轮的距离映射修复，以及当前 X11 的平滑�
 
 Anthropic 为 Debian 和 Ubuntu 提供官方 Linux beta。Agent Harbor 在 Webtop 内用 Debian PRoot 运行该应用。见 [官方 Linux 说明](https://code.claude.com/docs/en/desktop-linux)和[桌面启动与恢复](docs/DESKTOP-RECOVERY.md)。
 
-新部署时，在 **Ubuntu 宿主机的仓库目录**运行以下两步。第二步给 Claude 所在的 PRoot 安装 GNOME Keyring。持久保存登录态、SSH 密码和 Environment 凭据需要可用且已解锁的钥匙串。
+新部署可在 **Harbor → 安装 Claude** 中完成固定应用层和 GNOME Keyring 安装。也可在 **Ubuntu 宿主机的仓库目录**运行以下两步。持久保存登录态、SSH 密码和 Environment 凭据需要可用且已解锁的钥匙串。
 
 ```sh
 sudo docker exec -u abc sandbox-webtop \

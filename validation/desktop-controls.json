@@ -1,0 +1,55 @@
+{
+  "date": "2026-11-21",
+  "scope": "Local template tests followed by explicitly authorized activation on the existing desktop",
+  "observed": {
+    "chrome": "157.0.8103.79, headless local Chrome via Playwright",
+    "panel": [
+      "Collapse/expand preference persists after reload; Escape collapses",
+      "Open-browser dispatch uses the fixed action and required header",
+      "Update confirmation displays target version; cancel sends no action",
+      "Running Claude and recovery marker disable update/open as appropriate",
+      "Missing apps offer install; existing incomplete app directory is not overwritten",
+      "Busy state disables actions; lost POST response is not automatically retried",
+      "Offline and viewer sessions show an explanation and disable actions",
+      "Panel remains within a 375 x 667 viewport",
+      "Updated sidebar variant follows native sidebar visibility with no body-level overlay",
+      "Harbor reattaches after the native React sidebar is removed and recreated"
+    ],
+    "http": "Real aiohttp loopback server: no-store status, viewer/cross-site rejection, unknown/oversized action rejection, accepted dispatch and 409 busy response. Action execution mocked.",
+    "updater": "Synthetic package workflow: real private tar backup precedes mocked dpkg install; success clears recovery marker and failure retains backup/marker. Digest, maintainer-script and dependency-plan negative tests.",
+    "existing_home": "Disposable HOME: old managed helpers backed up; personal sentinel and unrelated launcher preserved; symlink destinations refused"
+  },
+  "live_activation": {
+    "authorization": "User explicitly requested activation on the existing source desktop through Termius",
+    "target_identity": "Omitted from repository; fixed full Termius session ID used throughout",
+    "backup": "/config/.local/state/sandbox-controls-deployment-backups/<timestamp>/",
+    "service_restarted": "svc-selkies only; service restart request returned exit 0 and a new healthy service PID was observed",
+    "status_api": "HTTP 200, desktop_ready=true; existing Chrome 157.0.8103.78-1 and Claude 6.28899.2 detected as running; keyring detected",
+    "browser": "The user's existing HTTPS desktop tab showed the expanded Harbor panel with live app versions and controls",
+    "main_processes_preserved": ["i3", "Chrome", "Claude Desktop"],
+    "process_comparison": "26 of 27 sampled application processes retained their original PID and start time; all three main processes retained",
+    "existing_paste_resource_preserved": "pastefix=macnative3",
+    "missing_installer_assets_seeded": true,
+    "containers_recreated": false,
+    "application_packages_changed": false,
+    "network_or_access_configuration_changed": false
+  },
+  "sidebar_followup": {
+    "date": "2026-11-21",
+    "reason": "User reported that the floating control still covered the desktop",
+    "placement": "First section of #dashboard-root .sidebar, position:static; collapsed by default",
+    "cache_marker": "20261121-sidebar1",
+    "live_browser_observed": "Expanded Harbor displayed both running app versions inside the native sidebar. Closing Selkies controls removed Harbor from the accessibility tree; no body-level Harbor overlay remained.",
+    "sidebar_width_css_px": 280,
+    "harbor_width_css_px": 232,
+    "services_restarted": false,
+    "existing_paste_resource_preserved": "pastefix=macnative3"
+  },
+  "not_tested": [
+    "Docker template/startup validation: local Docker daemon unavailable",
+    "Real application downloads, PRoot installation or Claude package upgrade",
+    "Fresh application launches, login persistence or full reboot",
+    "Second blank-host end-to-end deployment"
+  ],
+  "live_installations_modified": true
+}

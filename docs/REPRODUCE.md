@@ -247,6 +247,8 @@ launchctl bootout gui/$(id -u)/com.example.webtop-ssh-tunnel
 
 ## 7. 安装浏览器和 Claude 应用
 
+进入桌面后可打开 Selkies 侧边栏，展开 **Harbor 常用操作**，点击 **安装浏览器** 或 **安装 Claude**。面板展示安装状态与日志；Claude 安装包含下面的钥匙串步骤。安装完再点击打开。详细的新手流程与已有部署接入见 [常用操作面板](DESKTOP-CONTROLS.md)。下面保留管理员命令行入口。
+
 应用的二进制和 rootfs 未打包，交付包只记录源机 rootfs 层的 SHA-256。安装在 Webtop 内以普通用户运行，下载也经过配置的代理。
 
 ```bash
@@ -291,7 +293,7 @@ claude --version
 - 浏览器：`sandbox-browser`。
 - Claude Desktop：`sandbox-claude-desktop`，带显式代理、英文、X11、`--disable-gpu` 和 `--disable-http2`。软件渲染用于源机白屏兼容；HTTP/1.1 用于缓解源机代理链路上的资源冷加载延迟，不能推导所有网络都更快。
 - CLI：`claude`。它与桌面包内自带的 Claude Code 组件不是同一个安装入口。
-- 启动器是 xterm + Python curses 的小菜单，**不是自动扫描所有 .desktop 的完整桌面菜单**。现有四项：浏览器、终端、运行命令、Claude Desktop。新增应用可先选第 3 项运行命令，再修改 `sandbox-app-menu.py` 加入固定入口。
+- 推荐使用可收起的 Harbor 面板；xterm + Python curses 的四项小菜单保留为键盘备用入口，不自动扫描所有 `.desktop`。新增应用可先选菜单第 3 项运行命令。
 
 Claude Desktop 依赖同一桌面会话中已解锁的钥匙串来持久保存凭据。安装上面的两步后，在远程桌面启动 Claude，按提示设置或解锁钥匙串，再退出重开检查登录态。遇到 **No system keyring is available**，按[凭据与授权跳转](SECRET-SERVICE.md)检查包和 D-Bus。源机已验证加密存取和应用重开，完整宿主重启及新会话解锁仍需验收。Cowork、虚拟机、GPU 和 Code 的其他宿主能力各自需要验收。
 

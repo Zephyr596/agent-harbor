@@ -53,11 +53,12 @@ def main():
         shutil.copytree(root/'seed/home',data,dirs_exist_ok=True)
         (data/Path(file_root).relative_to('/config')).mkdir(parents=True,exist_ok=True)
         public=data/'.local/share/sandbox';public.mkdir(parents=True,exist_ok=True)
-        for src in [root/'apps.lock.json',root/'policies/chrome-managed.json']:
+        for src in [root/'apps.lock.json',root/'claude-update.lock.json',root/'policies/chrome-managed.json']:
             shutil.copy2(src,public/src.name)
         shutil.copy2(root/'seed/home/.local/share/applications/claude-pa.desktop',public/'claude-pa.desktop')
         lib=data/'.local/lib/sandbox';lib.mkdir(parents=True,exist_ok=True)
-        shutil.copy2(root/'tools/install-proot-app.py',lib/'install-proot-app.py')
+        for name in ['install-proot-app.py', 'install-secret-service.sh', 'update-claude.py']:
+            shutil.copy2(root/'tools'/name,lib/name)
         for p in (data/'.local/bin').iterdir():p.chmod(0o755)
         for name in ['svc-de-run', 'svc-selkies-run', 'svc-pulseaudio-run']:
             (root/'desktop'/name).chmod(0o755)

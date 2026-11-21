@@ -1,5 +1,7 @@
 # Claude Desktop 原地升级
 
+日常使用可通过 **Harbor → 更新 Claude** 安装 `claude-update.lock.json` 的仓库验证版本。它实现下述流程中的校验、依赖检查、私密备份与原地安装；遇到维护脚本或依赖变化会停止。面板接入、进度和恢复说明见 [常用操作面板](DESKTOP-CONTROLS.md)。以下仍可用于管理员审核新版本或手动维护。
+
 维护已有沙盒时，优先更新现有 Debian PRoot 内的官方 `claude-desktop` 包。不要直接运行 `proot-apps update claude`：上游流程会先删除应用 rootfs，再下载新层，可能丢失后装的 Secret Service、开发工具入口和 `xdg-open` 修补。固定安装器的 `--replace` 也不是查找新版；它仍安装 `apps.lock.json` 中指定的层。
 
 ## 维护步骤

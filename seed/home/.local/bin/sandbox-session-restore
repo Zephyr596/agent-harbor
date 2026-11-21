@@ -47,6 +47,8 @@ def make_plan(home, classes, processes):
             reason = "not-installed"
         elif (root / "DOWNLOADING").exists():
             reason = "installation-in-progress"
+        elif app['name'] == 'claude' and (home / '.local/state/sandbox-apps/claude.updating').exists():
+            reason = "update-needs-completion"
         elif not os.access(launcher, os.X_OK):
             reason = "launcher-unavailable"
         else:
