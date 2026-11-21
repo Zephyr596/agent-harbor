@@ -253,9 +253,10 @@ launchctl bootout gui/$(id -u)/com.example.webtop-ssh-tunnel
 sudo docker exec -u abc sandbox-webtop \
   python3 /config/.local/lib/sandbox/install-proot-app.py chrome
 
-# 可选：Claude Desktop
+# 安装 Claude Desktop 时，执行下面两步
 sudo docker exec -u abc sandbox-webtop \
   python3 /config/.local/lib/sandbox/install-proot-app.py claude
+sudo docker exec -u abc -i sandbox-webtop /bin/bash -s < tools/install-secret-service.sh
 ```
 
 这个辅助程序从公开 GHCR 获取 `apps.lock.json` 中指定的层，分段下载并支持续传，合并后核对完整 SHA-256，再在暂存目录解压、验证 Bash / dpkg 包，最后发布应用目录。现有目录默认拒绝覆盖；确需修复时加 `--replace`，旧目录会改名保留。
@@ -292,7 +293,7 @@ claude --version
 - CLI：`claude`。它与桌面包内自带的 Claude Code 组件不是同一个安装入口。
 - 启动器是 xterm + Python curses 的小菜单，**不是自动扫描所有 .desktop 的完整桌面菜单**。现有四项：浏览器、终端、运行命令、Claude Desktop。新增应用可先选第 3 项运行命令，再修改 `sandbox-app-menu.py` 加入固定入口。
 
-基础镜像不包含 Claude Desktop 的系统钥匙串；可选安装与用户首次设置见 [凭据与授权跳转](SECRET-SERVICE.md)。源机已验证加密存取和应用重开，完整宿主重启及新会话解锁仍需验收。没有用明文持久化绕过这个问题。能打开聊天界面也不表示 Cowork、虚拟机、GPU、全部 Code/宿主能力都已在 PRoot 中验收。
+Claude Desktop 依赖同一桌面会话中已解锁的钥匙串来持久保存凭据。安装上面的两步后，在远程桌面启动 Claude，按提示设置或解锁钥匙串，再退出重开检查登录态。遇到 **No system keyring is available**，按[凭据与授权跳转](SECRET-SERVICE.md)检查包和 D-Bus。源机已验证加密存取和应用重开，完整宿主重启及新会话解锁仍需验收。Cowork、虚拟机、GPU 和 Code 的其他宿主能力各自需要验收。
 
 ### 桌面工作区自动恢复
 

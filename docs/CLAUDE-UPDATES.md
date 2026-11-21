@@ -4,7 +4,7 @@
 
 ## 维护步骤
 
-1. 从 [Anthropic stable amd64 Packages](https://downloads.claude.ai/claude-desktop/apt/stable/dists/stable/main/binary-amd64/Packages) 选择明确版本，记录 `Filename`、`Size` 和 `SHA256`。经沙盒既有代理下载对应 `.deb`，核对大小和 SHA-256 后再安装。
+1. 从 [Anthropic stable amd64 Packages](https://downloads.claude.ai/claude-desktop/apt/stable/dists/stable/main/binary-amd64/Packages) 选择明确版本，记录 `Filename`、`Size` 和 `SHA256`。可经沙盒既有代理下载对应 `.deb`，也可在管理端下载后经 SSH 传入。安装前在沙盒内核对大小和 SHA-256。
 2. 在普通 Webtop 用户的桌面终端，用现有 PRoot 执行 `apt-get -s --no-install-recommends install /config/…/claude-desktop.deb`，检查依赖计划。比较新包的维护脚本与已装版本；出现意外系统更改时先检查原因。
 3. 正常退出 Claude，确认主进程退出。私下备份完整 Claude rootfs、`/config/.config/Claude/`、`/config/.local/share/keyrings/`、启动器、DBus 激活服务和默认浏览器配置。备份含账号状态，目录应为 0700，归档应为 0600，不能提交仓库。
 4. 依赖已满足时，在普通桌面用户下执行下列命令；`DEB` 必须指向刚刚校验的具体制品：
@@ -25,6 +25,16 @@
 6. 在桌面会话中运行 `sandbox-claude-desktop`，确认界面、登录状态和版本。额外验收授权跳转与通知时，不自动授权连接器、不发送真实模型任务。失败则关闭新进程，恢复先前备份的 rootfs 和个人状态，再用原启动器打开。
 
 ## 版本记录
+
+2026-11-21 在现有实例将 Claude Desktop 从 **5.11492.5** 升级到 **6.28899.2**。
+
+| 项目 | 值 |
+| --- | --- |
+| 官方相对路径 | `pool/main/c/claude-desktop/claude-desktop_6.28899.2_amd64.deb` |
+| 包大小 | `191801640` 字节 |
+| SHA-256 | `b7cbcc47a8c37cfe409eb146885b0196ffcd9b1f29be1642eb78a894d89ef6b1` |
+
+模拟安装只升级 Claude Desktop。新旧包的 `postinst` 和 `postrm` 一致。升级前备份了应用层、个人配置和钥匙串。安装后 `dpkg --audit` 通过，代理启动器与 `xdg-open` 脚本校验一致，GNOME keyring 和 Python、Node 入口仍可用。新版打开在工作区 2，原账号保持登录，历史会话可见。
 
 2026-11-14 对已有源机执行增量包升级：
 

@@ -4,13 +4,13 @@ Claude 的 Linux PRoot 层默认没有 Secret Service，源机日志记录了 `s
 
 ## 安装与启动
 
-可选包安装脚本在普通桌面用户的可写 Debian trixie rootfs 中运行，PRoot `-0` 只模拟 UID，不赋予宿主或容器 root：
+出现 **No system keyring is available** 时，先退出 Claude。若尚未安装钥匙串，从 Ubuntu 宿主机的仓库根目录运行以下命令。脚本在 Claude 自己的 Debian trixie PRoot 内安装包，使用普通桌面用户和 PRoot 模拟 UID 0。宿主机里的 GNOME Keyring 属于另一套桌面会话。
 
 ```sh
 sudo docker exec -u abc -i sandbox-webtop /bin/bash -s < tools/install-secret-service.sh
 ```
 
-现有 HOME 需备份后合并以下种子文件，不要重新覆盖个人配置：
+新部署的 `prepare.py` 已复制以下种子文件。若桌面目录早于钥匙串配置，先备份再补齐或合并这些文件，保留个人配置。从旧目录合并时，先补好种子文件再运行上面的安装脚本，使脚本能找到 `xdg-open` 修补。
 
 - `.local/bin/sandbox-secret-service`（可执行）
 - `.local/lib/sandbox-links/xdg-open`（可执行，复制到 Claude rootfs 的 `/usr/bin/xdg-open`）
@@ -26,6 +26,34 @@ sudo docker exec -u abc -i sandbox-webtop /bin/bash -s < tools/install-secret-se
 首次存储时，由用户在远程桌面的钥匙串对话框设置**非空密码**。不能用明文后端、空密码或脚本内保存密码来跳过；后续桌面会话可能需要再次解锁。钥匙串位于持久的 `/config/.local/share/keyrings/`，应随个人备份保管，但不能提交 Git。加密后端变化可能要求 Claude / Claude Code 重新登录一次。
 
 安装脚本针对源 rootfs 出现的 dpkg 文档/locale 重命名冲突，使用仅本次生效的路径排除，并从同版本 Debian 包恢复 copyright；没有全局修改 dpkg 策略。包版本固定，依赖仍由配置的 Debian 仓库解析，尚不是离线包镜像。
+
+## 检查钥匙串
+
+如果重开后仍有提示，在 **Webtop 桌面终端**运行以下命令。第一个检查守护进程已安装，第二个检查当前桌面 D-Bus 能否启动它。
+
+```sh
+ROOT=/config/proot-apps/ghcr.io_linuxserver_proot-apps_claude
+PROOT=/config/.local/bin/proot
+test -x "$ROOT/usr/bin/gnome-keyring-daemon" && echo 'GNOME Keyring 已安装'
+test -n "${DBUS_SESSION_BUS_ADDRESS:-}" && \
+  "$PROOT" -R "$ROOT" /usr/bin/dbus-send --session --print-reply \
+    --dest=org.freedesktop.DBus /org/freedesktop/DBus \
+    org.freedesktop.DBus.StartServiceByName string:org.freedesktop.secrets uint32:0
+```
+
+- 第一条无输出时，先完成包安装。第二条如报 `ServiceUnknown`，检查两个 `.service` 文件和它们调用的 `sandbox-secret-service` 是否已合并到 `/config`。如果当前终端没有会话 D-Bus 地址，从 Webtop 的应用菜单重新打开桌面终端。
+- `uint32 1` 或 `uint32 2` 表示服务已启动。要检查存取和解锁，可在同一个终端用合成值做一次写入、读回和清理。弹出对话框时，按提示设置或解锁钥匙串。
+
+```sh
+probe="agent-harbor-keyring-check-$$"
+printf '%s' "$probe" | "$PROOT" -R "$ROOT" /usr/bin/secret-tool store \
+  --label='Agent Harbor keyring check' agent-harbor-check "$probe" &&
+  test "$("$PROOT" -R "$ROOT" /usr/bin/secret-tool lookup agent-harbor-check "$probe")" = "$probe" &&
+  "$PROOT" -R "$ROOT" /usr/bin/secret-tool clear agent-harbor-check "$probe" &&
+  echo '钥匙串存取通过'
+```
+
+通过后，用 `sandbox-claude-desktop` 重开 Claude。改用钥匙串后，原登录可能需要重新完成一次。再次正常退出重开，确认登录保留。完整宿主重启后的解锁仍需现场验收。见 [Anthropic 的 Linux 钥匙串排查](https://code.claude.com/docs/en/desktop-linux#your-sign-in-wont-be-saved-on-this-device)。
 
 ## 外部链接与回调
 

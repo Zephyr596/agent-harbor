@@ -4,7 +4,7 @@
 
 出口服务器、DNS 上游与时区由部署参数决定。东京是最初运行实例和一个可选预设，不是方案依赖。首版支持 Shadowsocks-2022 / IPv4 TCP 后端；其他代理类型尚未实现。
 
-**状态：实验性复刻基线。** 已有运行实例和隔离启动验证，尚未完成第二台空白机器的全流程重放。Chrome / Electron 的 `--no-sandbox` 仍是已知缺口，不能把它当成完整的浏览器进程沙箱或多租户系统。Claude 可选加密钥匙串已加入，但首次设置、会话解锁和整机重启验收需单独完成。
+**状态：实验性复刻基线。** 已有运行实例和隔离启动验证，尚未完成第二台空白机器的全流程重放。Chrome / Electron 的 `--no-sandbox` 仍是已知缺口，不能把它当成完整的浏览器进程沙箱或多租户系统。
 
 [完整复刻指南](docs/REPRODUCE.md) · [验证记录](validation/DELIVERY-VALIDATION.md) · [后续路线图](docs/ROADMAP.md) · [贡献](CONTRIBUTING.md)
 
@@ -17,8 +17,8 @@
 | DNS | 配置的 TCP DNS 上游，经同一加密代理访问，无本地直连后备 |
 | 访问 | Ubuntu 仅发布 loopback；Tailscale Serve 持久 HTTPS；Mac launchd 持久 SSH 隧道 |
 | 可复刻性 | 镜像摘要与 PRoot 应用层锁定，干净 HOME 种子，安装和只读验收工具 |
-| 交互 | 动态分辨率、Mac 拼音提交与候选框补丁、Command 编辑与 Control 桌面控制分离 |
-| 应用 | Chrome；可选 Claude Desktop / Claude Code，由用户重新认证 |
+| 交互 | 动态分辨率、Mac 拼音与候选框、长文本粘贴、Command 编辑与 Control 桌面控制分离 |
+| 应用 | Chrome、可选的 Claude Desktop（Linux beta）和独立 Claude Code CLI |
 | 开发工具 / GPU | 可选持久 Python / uv / Node / PDF 工具；NVIDIA 原生 CDI 透传及 CUDA 计算验收 |
 | 会话恢复 | 桌面启动后重开已安装应用：工作区 1 Chrome、工作区 2 Claude；跳过已有进程 |
 | 文件 | 内置 Web 文件管理器；默认 `/config/projects`，进入子目录后上传/下载 |
@@ -26,15 +26,36 @@
 
 Tailscale 是进入桌面的管理通道，公网出站走所配置的代理；两条路径分开配置。首版不提供图形安装器，也没有自动根据出口切换时区、通用代理订阅管理或完整 VM 隔离。
 
-Claude Desktop 启动器保留软件渲染，并使用 `--disable-http2` 缓解源机代理链路上的冷加载延迟。工作区恢复及本机加载对照结果见 [桌面恢复与加载优化](docs/DESKTOP-RECOVERY.md)；这不是运行中进程或任意窗口布局的快照。
-
 文件上传入口和浏览器通知的使用方法、连接要求及验证范围见 [文件与通知](docs/FILES-NOTIFICATIONS.md)。开发工具、PRoot 两层路径及可选 GPU 配置见 [开发工具与 GPU](docs/DEVTOOLS-GPU.md)。
 
 Mac 触控板与连续滚轮的距离映射修复，以及当前 X11 的平滑滚动限制，见 [滚动映射](docs/SCROLLING.md)。
 
-可选的 Claude 加密凭据服务、首次钥匙串设置和外部浏览器处理器见 [凭据与授权跳转](docs/SECRET-SERVICE.md)。
-
 远程 Chrome 使用 1Password Passkey 的配置方式，以及手机扫码所需的蓝牙边界，见 [Passkey 登录](docs/PASSKEYS.md)。
+
+## Claude Desktop
+
+Anthropic 为 Debian 和 Ubuntu 提供官方 Linux beta。Agent Harbor 在 Webtop 内用 Debian PRoot 运行该应用。见 [官方 Linux 说明](https://code.claude.com/docs/en/desktop-linux)和[桌面启动与恢复](docs/DESKTOP-RECOVERY.md)。
+
+新部署时，在 **Ubuntu 宿主机的仓库目录**运行以下两步。第二步给 Claude 所在的 PRoot 安装 GNOME Keyring。持久保存登录态、SSH 密码和 Environment 凭据需要可用且已解锁的钥匙串。
+
+```sh
+sudo docker exec -u abc sandbox-webtop \
+  python3 /config/.local/lib/sandbox/install-proot-app.py claude
+sudo docker exec -u abc -i sandbox-webtop /bin/bash -s < tools/install-secret-service.sh
+```
+
+随后从 Webtop 桌面运行 `sandbox-claude-desktop`（应用菜单为 `Control+Return`、`d`、`4`）。首次使用钥匙串时，按远程桌面弹窗设置非空密码，完成登录后退出重开验证。已有 Claude、只看到 **No system keyring is available** 的安装，可从第二条命令开始，再按故障排查检查服务和解锁状态。见 [钥匙串设置与故障排查](docs/SECRET-SERVICE.md#安装与启动)。
+
+| 版本 | 含义 |
+| --- | --- |
+| **5.1231.0** | [`apps.lock.json`](apps.lock.json) 固定的 PRoot 应用层，用于新部署复刻基线 |
+| **6.28899.2** | 2026-11-21 在现有实例原地升级后验证的官方 `amd64` 包 |
+
+已有实例出现升级提示时，先备份应用层、个人配置与钥匙串，再在现有 PRoot 内安装经过 SHA-256 校验的官方 `.deb`。这样可保留后装的钥匙串、浏览器授权跳转和开发工具。`proot-apps update claude` 会重建应用层，仓库安装器的 `--replace` 会重装锁定基线。见 [升级步骤和版本记录](docs/CLAUDE-UPDATES.md)。
+
+- **项目环境**。Code 本地会话可选择 `/config/projects` 下的项目。修改已保存的 Environment 变量后，从该环境新建会话即可读取新值。见 [本地会话环境变量](https://code.claude.com/docs/en/desktop#set-environment-variables-for-local-sessions)。
+- **Mac 长文本粘贴**。Selkies 用 Chrome 粘贴事件携带的文本传给远程桌面，再触发远端粘贴。已在测试窗口验证 320 行中英文、换行和 emoji 完整送达。见 [剪贴板回归测试](tests/clipboard-paste.test.cjs)。
+- **验收范围**。源机已验证新版正常启动、原账号继续登录和历史会话可见。完整宿主重启后的钥匙串解锁仍待验收。Cowork 在 Linux 上另需 QEMU 和 KVM，本方案尚未验收这条路径。Claude 的 Computer Use 和语音听写以官方 Linux beta 支持范围为准。见 [Cowork 要求](https://code.claude.com/docs/en/desktop-linux#cowork-requirements)和 [Linux beta 功能范围](https://code.claude.com/docs/en/desktop-linux#whats-not-in-the-linux-beta-yet)。
 
 ## 从这里开始
 
